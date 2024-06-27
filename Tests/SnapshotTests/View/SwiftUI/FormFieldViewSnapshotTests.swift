@@ -10,7 +10,7 @@ import SwiftUI
 @testable import SparkFormField
 @_spi(SI_SPI) import SparkCommonSnapshotTesting
 import SparkTheming
-import SparkThemingTesting
+@_spi(SI_SPI) import SparkThemingTesting
 import SparkTheme
 
 final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
