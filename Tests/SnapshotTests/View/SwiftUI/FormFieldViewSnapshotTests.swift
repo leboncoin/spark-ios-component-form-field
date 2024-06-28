@@ -10,7 +10,7 @@ import SwiftUI
 @testable import SparkFormField
 @_spi(SI_SPI) import SparkCommonSnapshotTesting
 import SparkTheming
-import SparkThemingTesting
+@_spi(SI_SPI) import SparkThemingTesting
 import SparkTheme
 
 final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
@@ -58,7 +58,7 @@ final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
                 .frame(width: 300)
                 .fixedSize(horizontal: false, vertical: true)
                 .disabled(!configuration.isEnabled)
-                .background(.systemBackground)
+                .background(Color(.systemBackground))
 
                 self.assertSnapshot(
                     matching: view,
