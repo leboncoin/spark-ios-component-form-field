@@ -12,7 +12,7 @@ import UIKit
 import SparkCheckbox
 import SparkRadioButton
 import SparkTheming
-import SparkThemingTesting
+@_spi(SI_SPI) import SparkThemingTesting
 import SparkTheme
 
 final class FormFieldUIViewSnapshotTests: UIKitComponentSnapshotTestCase {
