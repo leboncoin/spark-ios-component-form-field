@@ -58,7 +58,7 @@ final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
                 .frame(width: 300)
                 .fixedSize(horizontal: false, vertical: true)
                 .disabled(!configuration.isEnabled)
-                .background(Color(UIColor.systemBackground))
+                .background(Color(.systemBackground))
 
                 self.assertSnapshot(
                     matching: view,
