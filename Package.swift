@@ -32,12 +32,12 @@ let package = Package(
        ),
        .package(
            url: "https://github.com/adevinta/spark-ios-component-checkbox.git",
-           // path: "../spark-ios-theming"
+           // path: "../spark-ios-component-checkbox"
            /*version*/ "0.0.1"..."999.999.999"
        ),
        .package(
            url: "https://github.com/adevinta/spark-ios-component-radio-button.git",
-           // path: "../spark-ios-theming"
+           // path: "../spark-ios-component-radio-button"
            /*version*/ "0.0.1"..."999.999.999"
        )
     ],
