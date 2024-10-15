@@ -54,6 +54,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///  - feedbackState: all
     ///  - label: short
     ///  - helperMessage: short
+    ///  - isCounter: false
     ///  - isRequired: false,
     ///  - isEnabled: true
     ///  - modes: light
@@ -67,6 +68,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
                     feedbackState: feedbackState,
                     label: "Agreement",
                     helperMessage: "Your agreement is important.",
+                    isCounter: false,
                     isRequired: false,
                     isEnabled: true,
                     modes: Constants.Modes.default,
@@ -83,6 +85,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///  - feedbackState: 'default'
     ///  - label: all
     ///  - helperMessage: short
+    ///  - isCounter: true
     ///  - isRequired: false,
     ///  - isEnabled: true
     ///  - modes: light
@@ -100,6 +103,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
                 feedbackState: .default,
                 label: label,
                 helperMessage: "Your agreement is important.",
+                isCounter: true,
                 isRequired: false,
                 isEnabled: true,
                 modes: Constants.Modes.default,
@@ -116,6 +120,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///  - feedbackState: 'default'
     ///  - label: all
     ///  - helperMessage: short
+    ///  - isCounter: false
     ///  - isRequired: false,
     ///  - isEnabled: true
     ///  - modes: light
@@ -126,6 +131,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
             feedbackState: .default,
             label: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
             helperMessage: "Your agreement is important.",
+            isCounter: false,
             isRequired: true,
             isEnabled: true,
             modes: Constants.Modes.default,
@@ -141,6 +147,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///  - feedbackState: error
     ///  - label: short
     ///  - helperMessage: all
+    ///  - isCounter: true
     ///  - isRequired: false,
     ///  - isEnabled: true
     ///  - modes: light
@@ -158,6 +165,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
                 feedbackState: .error,
                 label: "Agreement",
                 helperMessage: message,
+                isCounter: true,
                 isRequired: false,
                 isEnabled: true,
                 modes: Constants.Modes.default,
@@ -174,6 +182,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///  - feedbackState: 'default'
     ///  - label: short
     ///  - helperMessage: short
+    ///  - isCounter: false
     ///  - isRequired: false,
     ///  - isEnabled: true
     ///  - modes: light
@@ -187,6 +196,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
                 feedbackState: feedbackState,
                 label: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
                 helperMessage: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+                isCounter: false,
                 isRequired: false,
                 isEnabled: false,
                 modes: Constants.Modes.default,
@@ -203,6 +213,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///  - feedbackState: all
     ///  - label: short
     ///  - helperMessage: short
+    ///  - isCounter: false
     ///  - isRequired: false,
     ///  - isEnabled: false
     ///  - modes: dark
@@ -216,6 +227,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
                 feedbackState: feedbackState,
                 label: "Agreement",
                 helperMessage: "Your agreement is important.",
+                isCounter: false,
                 isRequired: false,
                 isEnabled: true,
                 modes: [.dark],
@@ -232,6 +244,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///  - feedbackState: error
     ///  - label: short
     ///  - helperMessage: short
+    ///  - isCounter: false
     ///  - isRequired: false,
     ///  - isEnabled: false
     ///  - modes: light
@@ -243,6 +256,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
             feedbackState: .error,
             label: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
             helperMessage: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+            isCounter: false,
             isRequired: true,
             isEnabled: true,
             modes: Constants.Modes.default,

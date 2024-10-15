@@ -9,13 +9,17 @@
 import UIKit
 @testable import SparkFormField
 @_spi(SI_SPI) import SparkCommonSnapshotTesting
-import SparkCheckbox
-import SparkRadioButton
+@_spi(SI_SPI) import SparkCommon
+@_spi(SI_SPI) import SparkCommonTesting
 import SparkTheming
 @_spi(SI_SPI) import SparkThemingTesting
 import SparkTheme
 
 final class FormFieldUIViewSnapshotTests: UIKitComponentSnapshotTestCase {
+
+    // MARK: - Type Alias
+
+    private typealias Constants = FormFieldSnapshotConstants
 
     // MARK: - Properties
 
@@ -31,81 +35,46 @@ final class FormFieldUIViewSnapshotTests: UIKitComponentSnapshotTestCase {
 
             for configuration in configurations {
 
-                let component = UISwitch()
-                component.setOn(true, animated: false)
+                let component = UITextField()
+                component.borderStyle = .roundedRect
+                component.text = "Your username"
 
                 let view = FormFieldUIView(
                     theme: self.theme,
                     component: component,
                     feedbackState: configuration.feedbackState,
                     title: configuration.label,
-                    description: configuration.helperMessage,
-                    isTitleRequired: configuration.isRequired,
-                    isEnabled: configuration.isEnabled
+                    helper: configuration.helperMessage,
+                    isTitleRequired: configuration.isRequired
                 )
-                view.backgroundColor = UIColor.systemBackground
-                view.translatesAutoresizingMaskIntoConstraints = false
 
+                if configuration.isCounter {
+                    view.setCounter(on: "Text", limit: 100)
+                }
+
+                view.backgroundColor = .systemBackground
+
+                let backgroundView = UIView()
+                backgroundView.backgroundColor = .secondarySystemBackground
+                backgroundView.translatesAutoresizingMaskIntoConstraints = false
                 NSLayoutConstraint.activate([
-                    view.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width)
+                    backgroundView.widthAnchor.constraint(equalToConstant: Constants.maxWidth)
                 ])
+                backgroundView.addSubview(view)
+                NSLayoutConstraint.stickEdges(
+                    from: view,
+                    to: backgroundView,
+                    insets: .init(all: Constants.padding)
+                )
 
                 self.assertSnapshot(
-                    matching: view,
+                    matching: backgroundView,
                     modes: configuration.modes,
                     sizes: configuration.sizes,
                     testName: configuration.testName()
                 )
             }
         }
-    }
-
-    static func makeSingleCheckbox() -> UIControl {
-        return CheckboxUIView(
-            theme: SparkTheme.shared,
-            text: "Hello World",
-            checkedImage: UIImage.mock,
-            selectionState: .unselected,
-            alignment: .left
-        )
-    }
-
-    static func makeVerticalCheckbox() -> UIControl {
-        let view = CheckboxGroupUIView(
-            checkedImage: UIImage.mock,
-            items: [
-                CheckboxGroupItemDefault(title: "Checkbox 1", id: "1", selectionState: .unselected, isEnabled: true),
-                CheckboxGroupItemDefault(title: "Checkbox 2", id: "2", selectionState: .selected, isEnabled: true),
-            ],
-            theme: SparkTheme.shared,
-            intent: .success,
-            accessibilityIdentifierPrefix: "checkbox"
-        )
-        view.layout = .vertical
-        return view
-    }
-
-    static func makeSingleRadioButton() -> UIControl {
-        return RadioButtonUIView(
-            theme: SparkTheme.shared,
-            intent: .info,
-            id: "radiobutton",
-            label: NSAttributedString(string: "Hello World"),
-            isSelected: true
-        )
-    }
-
-    static func makeVerticalRadioButton() -> UIControl {
-        return RadioButtonUIGroupView(
-            theme: SparkTheme.shared,
-            intent: .danger,
-            selectedID: "radiobutton",
-            items: [
-                RadioButtonUIItem(id: "1", label: "Radio Button 1"),
-                RadioButtonUIItem(id: "2", label: "Radio Button 2"),
-            ],
-            groupLayout: .vertical
-        )
     }
 }
 

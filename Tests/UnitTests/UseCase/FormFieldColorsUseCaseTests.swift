@@ -33,25 +33,29 @@ final class FormFieldColorsUseCaseTests: XCTestCase {
             let formfieldColors = sut.execute(from: theme, feedback: $0)
 
             let expectedFormFieldColor: FormFieldColors
+            let expectedCommonColor = self.theme.colors.base.onSurface.opacity(theme.dims.dim1)
 
             switch $0 {
             case .default:
                 expectedFormFieldColor = FormFieldColors(
                     title: theme.colors.base.onSurface,
-                    description: theme.colors.base.onSurface.opacity(theme.dims.dim1),
-                    asterisk: theme.colors.base.onSurface.opacity(theme.dims.dim1)
+                    helper: expectedCommonColor,
+                    asterisk: expectedCommonColor,
+                    info: expectedCommonColor
                 )
             case .error:
                 expectedFormFieldColor = FormFieldColors(
                     title: theme.colors.base.onSurface,
-                    description: theme.colors.feedback.error,
-                    asterisk: theme.colors.base.onSurface.opacity(theme.dims.dim1)
+                    helper: theme.colors.feedback.error,
+                    asterisk: expectedCommonColor,
+                    info: expectedCommonColor
                 )
             }
 
             XCTAssertEqual(formfieldColors.title.uiColor, expectedFormFieldColor.title.uiColor)
-            XCTAssertEqual(formfieldColors.description.uiColor, expectedFormFieldColor.description.uiColor)
+            XCTAssertEqual(formfieldColors.helper.uiColor, expectedFormFieldColor.helper.uiColor)
             XCTAssertEqual(formfieldColors.asterisk.uiColor, expectedFormFieldColor.asterisk.uiColor)
+            XCTAssertEqual(formfieldColors.info.uiColor, expectedFormFieldColor.info.uiColor)
         }
     }
 }

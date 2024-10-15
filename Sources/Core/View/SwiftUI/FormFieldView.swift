@@ -11,11 +11,43 @@ import SparkTheming
 
 public struct FormFieldView<Component: View>: View {
 
+    // MARK: - Properties
+
     @ObservedObject private var viewModel: FormFieldViewModel<AttributedString>
     @ScaledMetric private var spacing: CGFloat
     private let component: Component
 
-    /// Initialize a new checkbox UIKit-view.
+    // MARK: - Initialization
+
+    /// Initialize a formField.
+    /// - Parameters:
+    ///   - theme: The current Spark-Theme.
+    ///   - component: The component is covered by formfield.
+    ///   - feedbackState: The formfield feedback state. 'Default' or 'Error'.
+    ///   - title: The formfield title.
+    ///   - helper: The formfield helper message.
+    ///   - isTitleRequired: The asterisk symbol at the end of title.
+    public init(
+        theme: Theme,
+        @ViewBuilder component: @escaping () -> Component,
+        feedbackState: FormFieldFeedbackState = .default,
+        title: String? = nil,
+        helper: String? = nil,
+        isTitleRequired: Bool = false
+    ) {
+        let attributedTitle: AttributedString? = title.map(AttributedString.init)
+        let attributedHelper: AttributedString? = helper.map(AttributedString.init)
+        self.init(
+            theme: theme,
+            component: component,
+            feedbackState: feedbackState,
+            attributedTitle: attributedTitle,
+            attributedHelper: attributedHelper,
+            isTitleRequired: isTitleRequired
+        )
+    }
+
+    /// Initialize a formField.
     /// - Parameters:
     ///   - theme: The current Spark-Theme.
     ///   - component: The component is covered by formfield.
@@ -23,6 +55,7 @@ public struct FormFieldView<Component: View>: View {
     ///   - title: The formfield title.
     ///   - description: The formfield helper message.
     ///   - isTitleRequired: The asterisk symbol at the end of title.
+    @available(*, deprecated, message: "Replaced by the init with the helper String since the 0.1.1. (15/10/2024)")
     public init(
         theme: Theme,
         @ViewBuilder component: @escaping () -> Component,
@@ -31,19 +64,17 @@ public struct FormFieldView<Component: View>: View {
         description: String? = nil,
         isTitleRequired: Bool = false
     ) {
-        let attributedTitle: AttributedString? = title.map(AttributedString.init)
-        let attributedDescription: AttributedString? = description.map(AttributedString.init)
         self.init(
             theme: theme,
             component: component,
             feedbackState: feedbackState,
-            attributedTitle: attributedTitle,
-            attributedDescription: attributedDescription,
+            title: title,
+            helper: description,
             isTitleRequired: isTitleRequired
         )
     }
 
-    /// Initialize a new checkbox UIKit-view.
+    /// Initialize a formField.
     /// - Parameters:
     ///   - theme: The current Spark-Theme.
     ///   - component: The component is covered by formfield.
@@ -56,14 +87,14 @@ public struct FormFieldView<Component: View>: View {
         @ViewBuilder component: @escaping () -> Component,
         feedbackState: FormFieldFeedbackState = .default,
         attributedTitle: AttributedString? = nil,
-        attributedDescription: AttributedString? = nil,
+        attributedHelper: AttributedString? = nil,
         isTitleRequired: Bool = false
     ) {
         let viewModel = FormFieldViewModel<AttributedString>(
             theme: theme,
             feedbackState: feedbackState,
             title: attributedTitle,
-            description: attributedDescription,
+            helper: attributedHelper,
             isTitleRequired: isTitleRequired
         )
 
@@ -71,6 +102,35 @@ public struct FormFieldView<Component: View>: View {
         self._spacing = ScaledMetric(wrappedValue: viewModel.spacing)
         self.component = component()
     }
+
+    /// Initialize a formField.
+    /// - Parameters:
+    ///   - theme: The current Spark-Theme.
+    ///   - component: The component is covered by formfield.
+    ///   - feedbackState: The formfield feedback state. 'Default' or 'Error'.
+    ///   - attributedTitle: The formfield attributedTitle.
+    ///   - attributedDescription: The formfield attributed helper message.
+    ///   - isTitleRequired: The asterisk symbol at the end of title.
+    @available(*, deprecated, message: "Replaced by the init with the helper String since the 0.1.1. (15/10/2024)")
+    public init(
+        theme: Theme,
+        @ViewBuilder component: @escaping () -> Component,
+        feedbackState: FormFieldFeedbackState = .default,
+        attributedTitle: AttributedString? = nil,
+        attributedDescription: AttributedString? = nil,
+        isTitleRequired: Bool = false
+    ) {
+        self.init(
+            theme: theme,
+            component: component,
+            feedbackState: feedbackState,
+            attributedTitle: attributedTitle,
+            attributedHelper: attributedDescription,
+            isTitleRequired: isTitleRequired
+        )
+    }
+
+    // MARK: - View
 
     public var body: some View {
         VStack(alignment: .leading, spacing: self.spacing) {
@@ -83,11 +143,13 @@ public struct FormFieldView<Component: View>: View {
             }
             self.component
 
-            if let description = self.viewModel.description {
-                Text(description)
-                    .font(self.viewModel.descriptionFont.font)
-                    .foregroundStyle(self.viewModel.descriptionColor.color)
-                    .accessibilityIdentifier(FormFieldAccessibilityIdentifier.formFieldHelperMessage)
+            HStack(alignment: .top, spacing: self.spacing) {
+                if let helper = self.viewModel.helper {
+                    Text(helper)
+                        .font(self.viewModel.helperFont.font)
+                        .foregroundStyle(self.viewModel.helperColor.color)
+                        .accessibilityIdentifier(FormFieldAccessibilityIdentifier.formFieldHelperMessage)
+                }
             }
         }
         .accessibilityElement(children: .contain)

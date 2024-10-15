@@ -18,6 +18,7 @@ struct FormFieldConfigurationSnapshotTests {
     let feedbackState: FormFieldFeedbackState
     let label: String?
     let helperMessage: String?
+    let isCounter: Bool
     let isRequired: Bool
     let isEnabled: Bool
     let modes: [ComponentSnapshotTestMode]
@@ -30,7 +31,8 @@ struct FormFieldConfigurationSnapshotTests {
             "\(self.scenario.rawValue)",
             "\(self.feedbackState)",
             "IsRequired:\(self.isRequired)",
-            "IsEnabled:\(self.isEnabled)"
+            "IsEnabled:\(self.isEnabled)",
+            "IsCounter:\(self.isCounter)"
         ].joined(separator: "-")
     }
 }
