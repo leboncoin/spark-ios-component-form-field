@@ -23,14 +23,14 @@ struct FormFieldColorsUseCase: FormFieldColorsUseCaseable {
                 title: theme.colors.base.onSurface,
                 helper: commonColor,
                 asterisk: commonColor,
-                info: commonColor
+                secondaryHelper: commonColor
             )
         case .error:
             return FormFieldColors(
                 title: theme.colors.base.onSurface,
                 helper: theme.colors.feedback.error,
                 asterisk: commonColor,
-                info: commonColor
+                secondaryHelper: commonColor
             )
         }
     }

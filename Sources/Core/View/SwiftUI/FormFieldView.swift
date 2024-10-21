@@ -55,7 +55,7 @@ public struct FormFieldView<Component: View>: View {
     ///   - title: The formfield title.
     ///   - description: The formfield helper message.
     ///   - isTitleRequired: The asterisk symbol at the end of title.
-    @available(*, deprecated, message: "Replaced by the init with the helper String since the 0.1.1. (15/10/2024)")
+    @available(*, deprecated, message: "Replaced by the init with the helper String since the 0.1.1.")
     public init(
         theme: Theme,
         @ViewBuilder component: @escaping () -> Component,
@@ -111,7 +111,7 @@ public struct FormFieldView<Component: View>: View {
     ///   - attributedTitle: The formfield attributedTitle.
     ///   - attributedDescription: The formfield attributed helper message.
     ///   - isTitleRequired: The asterisk symbol at the end of title.
-    @available(*, deprecated, message: "Replaced by the init with the helper String since the 0.1.1. (15/10/2024)")
+    @available(*, deprecated, message: "Replaced by the init with the helper String since the 0.1.1.")
     public init(
         theme: Theme,
         @ViewBuilder component: @escaping () -> Component,

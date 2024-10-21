@@ -38,7 +38,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     }()
 
     private lazy var bottomStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [self.helperLabel, self.infoLabel])
+        let stackView = UIStackView(arrangedSubviews: [self.helperLabel, self.secondaryHelperLabel])
         stackView.axis = .horizontal
         stackView.spacing = self.spacing
         stackView.alignment = .top
@@ -58,14 +58,14 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         return label
     }()
 
-    @available(*, deprecated, message: "Replaced by helperLabel since the 0.1.1. (15/10/2024)")
+    @available(*, deprecated, message: "Replaced by helperLabel since the 0.1.1.")
     public var descriptionLabel: UILabel {
         self.helperLabel
     }
 
-    /// The info label of the input. The label is positioned at the bottom right.
+    /// The secondary helper label of the input. The label is positioned at the bottom right.
     /// Note : The label has a default *horizontal compression resistance priority* at **.required**.
-    public let infoLabel: UILabel = {
+    public let secondaryHelperLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .right
         label.backgroundColor = .clear
@@ -119,7 +119,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     }
 
     /// The description of formfield.
-    @available(*, deprecated, message: "Replaced by helperString since the 0.1.1. (15/10/2024)")
+    @available(*, deprecated, message: "Replaced by helperString since the 0.1.1.")
     public var descriptionString: String? {
         get {
             return self.helperString
@@ -140,7 +140,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     }
 
     /// The attributedDescription of formfield.
-    @available(*, deprecated, message: "Replaced by attributedHelper since the 0.1.1. (15/10/2024)")
+    @available(*, deprecated, message: "Replaced by attributedHelper since the 0.1.1.")
     public var attributedDescription: NSAttributedString? {
         get {
             return self.attributedHelper
@@ -228,7 +228,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     ///   - title: The formfield title.
     ///   - description: The formfield helper message.
     ///   - isTitleRequired: The asterisk symbol at the end of title.
-    @available(*, deprecated, message: "Replaced by the init with the helper String since the 0.1.1. (15/10/2024)")
+    @available(*, deprecated, message: "Replaced by the init with the helper String since the 0.1.1.")
     public convenience init(
         theme: Theme,
         component: Component,
@@ -291,7 +291,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     ///   - attributedTitle: The formfield attributedTitle.
     ///   - attributedDescription: The formfield attributed helper message.
     ///   - isTitleRequired: The asterisk symbol at the end of title.
-    @available(*, deprecated, message: "Replaced by the init with the helper String since the 0.1.1. (15/10/2024)")
+    @available(*, deprecated, message: "Replaced by the init with the helper String since the 0.1.1.")
     public convenience init(
         theme: Theme,
         component: Component,
@@ -364,18 +364,18 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         // ***
 
         // ***
-        // Info
-        self.viewModel.$info.subscribe(in: &self.cancellables) { [weak self] text in
-            self?.infoLabel.isHidden = text == nil
-            self?.infoLabel.text = text
+        // Seconday Helper
+        self.viewModel.$secondaryHelper.subscribe(in: &self.cancellables) { [weak self] text in
+            self?.secondaryHelperLabel.isHidden = text == nil
+            self?.secondaryHelperLabel.text = text
         }
 
-        self.viewModel.$infoFont.subscribe(in: &self.cancellables) { [weak self] font in
-            self?.infoLabel.font = font.uiFont
+        self.viewModel.$secondaryHelperFont.subscribe(in: &self.cancellables) { [weak self] font in
+            self?.secondaryHelperLabel.font = font.uiFont
         }
 
-        self.viewModel.$infoColor.subscribe(in: &self.cancellables) { [weak self] color in
-            self?.infoLabel.textColor = color.uiColor
+        self.viewModel.$secondaryHelperColor.subscribe(in: &self.cancellables) { [weak self] color in
+            self?.secondaryHelperLabel.textColor = color.uiColor
         }
         // ***
 
@@ -404,7 +404,7 @@ public extension FormFieldUIView where Component: UITextInput {
 
     // MARK: - Public Setter
 
-    /// Display a counter value (X/Y) in the info label with a text and the limit.
+    /// Display a counter value (X/Y) in the secondary helper label with a text and the limit.
     /// - parameter text: the text where the characters must be counted.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
     func setCounter(on text: String?, limit: Int?) {

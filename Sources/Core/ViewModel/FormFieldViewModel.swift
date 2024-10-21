@@ -22,9 +22,9 @@ final class FormFieldViewModel<AS: SparkAttributedString>: ObservableObject {
     @Published private(set) var helperFont: any TypographyFontToken
     @Published private(set) var helperColor: any ColorToken
 
-    @Published private(set) var info: String?
-    @Published private(set) var infoFont: any TypographyFontToken
-    @Published private(set) var infoColor: any ColorToken
+    @Published private(set) var secondaryHelper: String?
+    @Published private(set) var secondaryHelperFont: any TypographyFontToken
+    @Published private(set) var secondaryHelperColor: any ColorToken
 
     @Published private(set) var spacing: CGFloat
 
@@ -79,8 +79,8 @@ final class FormFieldViewModel<AS: SparkAttributedString>: ObservableObject {
         self.titleColor = self.colors.title
         self.helperFont = Self.helperFont(from: theme)
         self.helperColor = self.colors.helper
-        self.infoFont = Self.infoFont(from: theme)
-        self.infoColor = self.colors.info
+        self.secondaryHelperFont = Self.secondaryHelperFont(from: theme)
+        self.secondaryHelperColor = self.colors.secondaryHelper
         self.setTitle(title)
     }
 
@@ -93,11 +93,11 @@ final class FormFieldViewModel<AS: SparkAttributedString>: ObservableObject {
 
     func setCounter(text: String?, limit: Int?) {
         guard let limit else {
-            self.info = nil
+            self.secondaryHelper = nil
             return
         }
 
-        self.info = "\(text?.count ?? 0)/\(limit)"
+        self.secondaryHelper = "\(text?.count ?? 0)/\(limit)"
     }
 
     // MARK: - Private Update
@@ -110,13 +110,13 @@ final class FormFieldViewModel<AS: SparkAttributedString>: ObservableObject {
         self.colors = self.colorUseCase.execute(from: self.theme, feedback: self.feedbackState)
         self.titleColor = self.colors.title
         self.helperColor = self.colors.helper
-        self.infoColor = self.colors.info
+        self.secondaryHelperColor = self.colors.secondaryHelper
     }
 
     private func updateFonts() {
         self.titleFont = Self.titleFont(from: self.theme)
         self.helperFont = Self.helperFont(from: self.theme)
-        self.infoFont = Self.infoFont(from: self.theme)
+        self.secondaryHelperFont = Self.secondaryHelperFont(from: self.theme)
     }
 
     private func updateSpacing() {
@@ -126,18 +126,18 @@ final class FormFieldViewModel<AS: SparkAttributedString>: ObservableObject {
     // MARK: - Static func
 
     private static func titleFont(from theme: Theme) -> any TypographyFontToken {
-        theme.typography.body2
+        return theme.typography.body2
     }
 
     private static func helperFont(from theme: Theme) -> any TypographyFontToken {
-        theme.typography.caption
+        return theme.typography.caption
     }
 
-    private static func infoFont(from theme: Theme) -> any TypographyFontToken {
-        theme.typography.caption
+    private static func secondaryHelperFont(from theme: Theme) -> any TypographyFontToken {
+        return theme.typography.caption
     }
 
     private static func spacing(from theme: Theme) -> CGFloat {
-        theme.layout.spacing.small
+        return theme.layout.spacing.small
     }
 }

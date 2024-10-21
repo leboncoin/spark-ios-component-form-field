@@ -12,5 +12,5 @@ struct FormFieldColors {
     let title: any ColorToken
     let helper: any ColorToken
     let asterisk: any ColorToken
-    let info: any ColorToken
+    let secondaryHelper: any ColorToken
 }

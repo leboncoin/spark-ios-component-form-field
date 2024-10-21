@@ -41,21 +41,21 @@ final class FormFieldColorsUseCaseTests: XCTestCase {
                     title: theme.colors.base.onSurface,
                     helper: expectedCommonColor,
                     asterisk: expectedCommonColor,
-                    info: expectedCommonColor
+                    secondaryHelper: expectedCommonColor
                 )
             case .error:
                 expectedFormFieldColor = FormFieldColors(
                     title: theme.colors.base.onSurface,
                     helper: theme.colors.feedback.error,
                     asterisk: expectedCommonColor,
-                    info: expectedCommonColor
+                    secondaryHelper: expectedCommonColor
                 )
             }
 
             XCTAssertEqual(formfieldColors.title.uiColor, expectedFormFieldColor.title.uiColor)
             XCTAssertEqual(formfieldColors.helper.uiColor, expectedFormFieldColor.helper.uiColor)
             XCTAssertEqual(formfieldColors.asterisk.uiColor, expectedFormFieldColor.asterisk.uiColor)
-            XCTAssertEqual(formfieldColors.info.uiColor, expectedFormFieldColor.info.uiColor)
+            XCTAssertEqual(formfieldColors.secondaryHelper.uiColor, expectedFormFieldColor.secondaryHelper.uiColor)
         }
     }
 }

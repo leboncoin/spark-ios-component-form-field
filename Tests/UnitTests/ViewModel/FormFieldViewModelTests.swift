@@ -48,10 +48,10 @@ final class FormFieldViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.spacing, self.theme.layout.spacing.small)
         XCTAssertEqual(viewModel.titleFont.uiFont, self.theme.typography.body2.uiFont)
         XCTAssertEqual(viewModel.helperFont.uiFont, self.theme.typography.caption.uiFont)
-        XCTAssertEqual(viewModel.infoFont.uiFont, self.theme.typography.caption.uiFont)
+        XCTAssertEqual(viewModel.secondaryHelperFont.uiFont, self.theme.typography.caption.uiFont)
         XCTAssertEqual(viewModel.titleColor.uiColor, viewModel.colors.title.uiColor)
         XCTAssertEqual(viewModel.helperColor.uiColor, viewModel.colors.helper.uiColor)
-        XCTAssertEqual(viewModel.infoColor.uiColor, viewModel.colors.info.uiColor)
+        XCTAssertEqual(viewModel.secondaryHelperColor.uiColor, viewModel.colors.secondaryHelper.uiColor)
     }
 
     func test_texts_right_value() {
@@ -129,7 +129,7 @@ final class FormFieldViewModelTests: XCTestCase {
         viewModel.setCounter(text: "text", limit: 100)
 
         // Then
-        XCTAssertEqual(viewModel.info, "4/100")
+        XCTAssertEqual(viewModel.secondaryHelper, "4/100")
     }
 
     func test_setCounter_without_text() {
@@ -146,7 +146,7 @@ final class FormFieldViewModelTests: XCTestCase {
         viewModel.setCounter(text: nil, limit: 100)
 
         // Then
-        XCTAssertEqual(viewModel.info, "0/100")
+        XCTAssertEqual(viewModel.secondaryHelper, "0/100")
     }
 
     func test_setCounter_without_limit() {
@@ -163,7 +163,7 @@ final class FormFieldViewModelTests: XCTestCase {
         viewModel.setCounter(text: "azazd", limit: nil)
 
         // Then
-        XCTAssertNil(viewModel.info)
+        XCTAssertNil(viewModel.secondaryHelper)
     }
 
     func test_set_feedback_state() {
