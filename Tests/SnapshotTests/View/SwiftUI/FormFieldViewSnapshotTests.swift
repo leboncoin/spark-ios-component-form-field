@@ -15,6 +15,10 @@ import SparkTheme
 
 final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
 
+    // MARK: - Type Alias
+
+    private typealias Constants = FormFieldSnapshotConstants
+
     // MARK: - Properties
 
     private let theme: Theme = SparkTheme.shared
@@ -39,26 +43,23 @@ final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
 
             for configuration in configurations {
 
-                let component = HStack {
-                    Toggle("", isOn: isOn)
-                        .labelsHidden()
-                    Spacer()
-                }
-
                 let view = FormFieldView(
                     theme: self.theme,
                     component: {
-                        component
+                        TextField("Your username", text: .constant(""))
+                            .textFieldStyle(.roundedBorder)
                     },
                     feedbackState: configuration.feedbackState,
                     title: configuration.label,
-                    description: configuration.helperMessage,
+                    helper: configuration.helperMessage,
                     isTitleRequired: configuration.isRequired
                 )
-                .frame(width: 300)
-                .fixedSize(horizontal: false, vertical: true)
                 .disabled(!configuration.isEnabled)
-                .background(Color(.systemBackground))
+                .background(.background)
+                .frame(width: Constants.maxWidth)
+                .padding(Constants.padding)
+                .fixedSize(horizontal: false, vertical: true)
+                .background(Color(uiColor: .secondarySystemBackground))
 
                 self.assertSnapshot(
                     matching: view,

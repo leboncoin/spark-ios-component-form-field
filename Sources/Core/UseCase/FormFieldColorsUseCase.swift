@@ -16,18 +16,21 @@ protocol FormFieldColorsUseCaseable {
 struct FormFieldColorsUseCase: FormFieldColorsUseCaseable {
 
     func execute(from theme: Theme, feedback state: FormFieldFeedbackState) -> FormFieldColors {
+        let commonColor = theme.colors.base.onSurface.opacity(theme.dims.dim1)
         switch state {
         case .default:
             return FormFieldColors(
                 title: theme.colors.base.onSurface,
-                description: theme.colors.base.onSurface.opacity(theme.dims.dim1),
-                asterisk: theme.colors.base.onSurface.opacity(theme.dims.dim1)
+                helper: commonColor,
+                asterisk: commonColor,
+                secondaryHelper: commonColor
             )
         case .error:
             return FormFieldColors(
                 title: theme.colors.base.onSurface,
-                description: theme.colors.feedback.error,
-                asterisk: theme.colors.base.onSurface.opacity(theme.dims.dim1)
+                helper: theme.colors.feedback.error,
+                asterisk: commonColor,
+                secondaryHelper: commonColor
             )
         }
     }

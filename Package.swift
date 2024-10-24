@@ -29,16 +29,6 @@ let package = Package(
            url: "https://github.com/adevinta/spark-ios-theming.git",
            // path: "../spark-ios-theming"
            /*version*/ "0.0.1"..."999.999.999"
-       ),
-       .package(
-           url: "https://github.com/adevinta/spark-ios-component-checkbox.git",
-           // path: "../spark-ios-component-checkbox"
-           /*version*/ "0.0.1"..."999.999.999"
-       ),
-       .package(
-           url: "https://github.com/adevinta/spark-ios-component-radio-button.git",
-           // path: "../spark-ios-component-radio-button"
-           /*version*/ "0.0.1"..."999.999.999"
        )
     ],
     targets: [
@@ -103,15 +93,7 @@ let package = Package(
                 .product(
                     name: "SparkCommonSnapshotTesting",
                     package: "spark-ios-common"
-                ),
-                .product(
-                    name: "SparkCheckbox",
-                    package: "spark-ios-component-checkbox"
-                ),
-                .product(
-                    name: "SparkRadioButton",
-                    package: "spark-ios-component-radio-button"
-                ),
+                )
             ],
             path: "Tests/SnapshotTests"
         ),
