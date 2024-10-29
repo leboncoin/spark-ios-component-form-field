@@ -1,30 +1,43 @@
 # FormField
+
 A wrapper component which support UIView components with label and helper message (Success/Info/Error management).
 
 ![Figma anatomy](https://github.com/adevinta/spark-ios-component-form-field/blob/main/.github/assets/anatomy.png)
 
 ## Specifications
+
 The formfield specifications on Zeroheight is [here](https://spark.adevinta.com/1186e1705/p/590121-components).
 
 ## Usage
+
 FormField is available on UIKit and SwiftUI.
 
 ### FormFieldUIView
 
 #### Parameters:
-* `theme`: The current Spark-Theme. [You can always define your own theme.](https://github.com/adevinta/spark-ios/wiki/Theming#your-own-theming)
-* `component`: The component (UIView) is covered by formfield.
-* `feedbackState`: The formfield feedback state. 'Default' or 'Error'.(There aren't design changes for Success and Info states. They will be managed with 'Default')
-* `title`: An option string. The title is rendered above the component.
-* `attributedTitle`: An option attributed string to change label of font or size.
-* `helper`: An option string. The title is rendered under the component.
-* `attributedDescription`: An option attributed string to change helper message of font or size.
-* `isTitleRequired`: A bool value to add asterisk character at the end of title for specifying required field.
-* `isEnabled`: A bool value to change wrapped component enabled state
-* `isSelected`: A bool value to change wrapped component selected state
+
+- `theme`: The current Spark-Theme. [You can always define your own theme.](https://github.com/adevinta/spark-ios/wiki/Theming#your-own-theming)
+- `component`: The component (UIView) is covered by formfield.
+- `feedbackState`: The formfield feedback state. 'Default' or 'Error'.(There aren't design changes for Success and Info states. They will be managed with 'Default')
+- `title`: An option string. The title is rendered above the component.
+- `attributedTitle`: An option attributed string to change label of font or size.
+- `helper`: An option string. The title is rendered under the component.
+- `attributedDescription`: An option attributed string to change helper message of font or size.
+- `isTitleRequired`: A bool value to add asterisk character at the end of title for specifying required field.
+- `isEnabled`: A bool value to change wrapped component enabled state
+- `isSelected`: A bool value to change wrapped component selected state
+
+#### Subviews
+
+The FormField contains some public subviews :
+
+- `titleLabel`: The title label of the input. The label is positioned at the top left.
+- `helperLabel`: The helper label of the input. The label is positioned at the bottom left.
+- `secondaryHelperLabel`: The secondary helper label of the input. The label is positioned at the bottom right.
 
 #### Functions:
-If the component inside the FormField is inherit from an UITextInput (The Spark TextField and TextEditor for example), a function to set the number of the characters is available: 
+
+If the component inside the FormField is inherit from an UITextInput (The Spark TextField and TextEditor for example), a function to set the number of the characters is available:
 
 ```swift
 func setCounter(on text: String?, limit: Int?)
@@ -33,16 +46,18 @@ func setCounter(on text: String?, limit: Int?)
 ### FormFieldView
 
 #### Parameters:
-* `theme`: The current Spark-Theme. [You can always define your own theme.](https://github.com/adevinta/spark-ios/wiki/Theming#your-own-theming)
-* `component`: The component (UIView) is covered by formfield.
-* `feedbackState`: The formfield feedback state. 'Default' or 'Error'.(There aren't design changes for Success and Info states. They will be managed with 'Default')
-* `title`: An option string. The title is rendered above the component.
-* `attributedTitle`: An option attributed string to change label of font or size.
-* `helper`: An option string. The title is rendered under the component.
-* `attributedDescription`: An option attributed string to change helper message of font or size.
-* `isTitleRequired`: A bool value to add asterisk character at the end of title for specifying required field.
+
+- `theme`: The current Spark-Theme. [You can always define your own theme.](https://github.com/adevinta/spark-ios/wiki/Theming#your-own-theming)
+- `component`: The component (UIView) is covered by formfield.
+- `feedbackState`: The formfield feedback state. 'Default' or 'Error'.(There aren't design changes for Success and Info states. They will be managed with 'Default')
+- `title`: An option string. The title is rendered above the component.
+- `attributedTitle`: An option attributed string to change label of font or size.
+- `helper`: An option string. The title is rendered under the component.
+- `attributedDescription`: An option attributed string to change helper message of font or size.
+- `isTitleRequired`: A bool value to add asterisk character at the end of title for specifying required field.
 
 ## Examples
+
 ### FormFieldUIView
 
 ```swift
@@ -73,6 +88,7 @@ NSLayoutConstraint.activate([
 ```
 
 ### FormFieldView
+
 ```swift
 var component: some View {
    CheckboxView(

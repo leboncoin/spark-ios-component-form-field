@@ -27,7 +27,8 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         return stackView
     }()
 
-    private let titleLabel: UILabel = {
+    /// The title label of the input. The label is positioned at the top left.
+    public let titleLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .clear
         label.numberOfLines = 0
