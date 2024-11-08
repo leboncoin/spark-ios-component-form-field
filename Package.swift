@@ -26,6 +26,11 @@ let package = Package(
            /*version*/ "0.0.1"..."999.999.999"
        ),
        .package(
+           url: "https://github.com/adevinta/spark-ios-component-text-input.git",
+           // path: "../spark-ios-component-text-input"
+           /*version*/ "0.0.1"..."999.999.999"
+       ),
+       .package(
            url: "https://github.com/adevinta/spark-ios-theming.git",
            // path: "../spark-ios-theming"
            /*version*/ "0.0.1"..."999.999.999"
@@ -38,6 +43,10 @@ let package = Package(
                 .product(
                     name: "SparkCommon",
                     package: "spark-ios-common"
+                ),
+                .product(
+                    name: "SparkTextInput",
+                    package: "spark-ios-component-text-input"
                 ),
                 .product(
                     name: "SparkTheming",
