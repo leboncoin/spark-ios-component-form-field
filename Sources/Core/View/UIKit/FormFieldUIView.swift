@@ -11,6 +11,7 @@ import SwiftUI
 import UIKit
 @_spi(SI_SPI) import SparkCommon
 import SparkTheming
+import SparkTextInput
 
 // TODO: compression resistance
 
@@ -402,6 +403,18 @@ public final class FormFieldUIView<Component: UIView>: UIView {
 // MARK: - Public Extension
 
 public extension FormFieldUIView where Component: UITextInput {
+
+    // MARK: - Public Setter
+
+    /// Display a counter value (X/Y) in the secondary helper label with a text and the limit.
+    /// - parameter text: the text where the characters must be counted.
+    /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    func setCounter(on text: String?, limit: Int?) {
+        self.viewModel.setCounter(text: text, limit: limit)
+    }
+}
+
+public extension FormFieldUIView where Component: TextFieldAddonsUIView {
 
     // MARK: - Public Setter
 
