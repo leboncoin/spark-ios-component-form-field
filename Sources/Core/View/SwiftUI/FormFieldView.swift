@@ -8,6 +8,7 @@
 
 import SwiftUI
 import SparkTheming
+@_spi(SI_SPI) import SparkCommon
 
 public struct FormFieldView<Component: View>: View {
 
@@ -16,6 +17,10 @@ public struct FormFieldView<Component: View>: View {
     @ObservedObject private var viewModel: FormFieldViewModel<AttributedString>
     @ScaledMetric private var spacing: CGFloat
     private let component: Component
+
+    private var titleAccessibility: Accessibility = .init()
+    private var helperAccessibility: Accessibility = .init()
+    private var secondaryHelperAccessibility: Accessibility = .init()
 
     // MARK: - Initialization
 
@@ -140,6 +145,7 @@ public struct FormFieldView<Component: View>: View {
                     .font(self.viewModel.titleFont.font)
                     .foregroundStyle(self.viewModel.titleColor.color)
                     .accessibilityIdentifier(FormFieldAccessibilityIdentifier.formFieldLabel)
+                    .accessibility(self.titleAccessibility)
             }
             self.component
 
@@ -149,10 +155,70 @@ public struct FormFieldView<Component: View>: View {
                         .font(self.viewModel.helperFont.font)
                         .foregroundStyle(self.viewModel.helperColor.color)
                         .accessibilityIdentifier(FormFieldAccessibilityIdentifier.formFieldHelperMessage)
+                        .accessibility(self.helperAccessibility)
+                }
+
+                if let secondaryHelper = self.viewModel.secondaryHelper {
+                    Spacer(minLength: 0)
+
+                    Text(secondaryHelper)
+                        .font(self.viewModel.secondaryHelperFont.font)
+                        .foregroundStyle(self.viewModel.secondaryHelperColor.color)
+                        .accessibilityIdentifier(FormFieldAccessibilityIdentifier.formFieldSecondaryHelperMessage)
+                        .accessibility(self.secondaryHelperAccessibility)
                 }
             }
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(FormFieldAccessibilityIdentifier.formField)
+    }
+
+    // MARK: - Accessibility Modifier
+
+    /// Set accessibility label for the *title* subview.
+    /// - parameter label: the accessibility label.
+    /// - Returns: The current view.
+    public func titleAccessibilityLabel(_ label: String) -> Self {
+        var copy = self
+        copy.titleAccessibility.label = label
+        return copy
+    }
+
+    /// Set accessibility label for the *helper* subview.
+    /// - parameter label: the accessibility label.
+    /// - Returns: The current view.
+    public func helperAccessibilityLabel(_ label: String) -> Self {
+        var copy = self
+        copy.helperAccessibility.label = label
+        return copy
+    }
+
+    /// Set accessibility label for the *secondaryHelper* subview.
+    /// - parameter label: the accessibility label.
+    /// - Returns: The current view.
+    public func secondaryHelperAccessibilityLabel(_ label: String) -> Self {
+        var copy = self
+        copy.secondaryHelperAccessibility.label = label
+        return copy
+    }
+
+    // MARK: - Counter Modifier
+
+    /// Display a counter value (X/Y) in the secondary helper label with a text and the limit.
+    /// - parameter text: the text where the characters must be counted.
+    /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    /// - Returns: The current view.
+    public func counter(on text: String, limit: Int?) -> Self {
+        self.viewModel.setCounter(textLength: text.count, limit: limit)
+        return self
+    }
+
+    /// Display a counter value (X/Y) in the secondary helper label with a text length and the limit.
+    /// - parameter textLength: the text length.
+    /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    /// - Returns: The current view.
+    public func setCounter(on textLength: Int, limit: Int?) -> Self {
+        self.viewModel.setCounter(textLength: textLength, limit: limit)
+        return self
     }
 }
