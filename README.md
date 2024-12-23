@@ -37,10 +37,14 @@ The FormField contains some public subviews :
 
 #### Functions:
 
-If the component inside the FormField is inherit from an UITextInput (The Spark TextField and TextEditor for example), a function to set the number of the characters is available:
+If the component inside the FormField is inherit from an UITextInput (The Spark TextField and TextEditor for example), two functions to set the number of the characters are available:
 
 ```swift
+// With the text
 func setCounter(on text: String?, limit: Int?)
+
+// Or with the text length
+func setCounter(on textLength: Int, limit: Int?)
 ```
 
 ### FormFieldView
@@ -55,6 +59,18 @@ func setCounter(on text: String?, limit: Int?)
 - `helper`: An option string. The title is rendered under the component.
 - `attributedDescription`: An option attributed string to change helper message of font or size.
 - `isTitleRequired`: A bool value to add asterisk character at the end of title for specifying required field.
+
+#### Modifiers:
+
+Two modifier functions to set the number of the characters are available:
+
+```swift
+// With the text
+func counter(on text: String, limit: Int?) -> Self
+
+// Or with the text length
+func counter(on textLength: Int, limit: Int?) -> Self
+```
 
 ## Examples
 

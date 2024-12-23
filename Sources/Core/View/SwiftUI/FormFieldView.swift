@@ -202,6 +202,15 @@ public struct FormFieldView<Component: View>: View {
         return copy
     }
 
+    /// Set accessibility value for the *secondaryHelper* subview.
+    /// - parameter value: the accessibility value.
+    /// - Returns: The current view.
+    public func secondaryHelperAccessibilityValue(_ value: String) -> Self {
+        var copy = self
+        copy.secondaryHelperAccessibility.value = value
+        return copy
+    }
+
     // MARK: - Counter Modifier
 
     /// Display a counter value (X/Y) in the secondary helper label with a text and the limit.
@@ -217,7 +226,7 @@ public struct FormFieldView<Component: View>: View {
     /// - parameter textLength: the text length.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
     /// - Returns: The current view.
-    public func setCounter(on textLength: Int, limit: Int?) -> Self {
+    public func counter(on textLength: Int, limit: Int?) -> Self {
         self.viewModel.setCounter(textLength: textLength, limit: limit)
         return self
     }
