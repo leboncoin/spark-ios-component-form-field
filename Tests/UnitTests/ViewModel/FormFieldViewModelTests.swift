@@ -149,6 +149,40 @@ final class FormFieldViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.secondaryHelper, "0/100")
     }
 
+    func test_setCounter_with_textLength() {
+        // Given
+        let viewModel = FormFieldViewModel<NSAttributedString>(
+            theme: self.theme,
+            feedbackState: .default,
+            title: NSAttributedString("Title"),
+            helper: NSAttributedString("Helper"),
+            isTitleRequired: true
+        )
+
+        // When
+        viewModel.setCounter(textLength: 4, limit: 100)
+
+        // Then
+        XCTAssertEqual(viewModel.secondaryHelper, "4/100")
+    }
+
+    func test_setCounter_without_textLength() {
+        // Given
+        let viewModel = FormFieldViewModel<NSAttributedString>(
+            theme: self.theme,
+            feedbackState: .default,
+            title: NSAttributedString("Title"),
+            helper: NSAttributedString("Helper"),
+            isTitleRequired: true
+        )
+
+        // When
+        viewModel.setCounter(textLength: nil, limit: 100)
+
+        // Then
+        XCTAssertEqual(viewModel.secondaryHelper, "0/100")
+    }
+
     func test_setCounter_without_limit() {
         // Given
         let viewModel = FormFieldViewModel<NSAttributedString>(

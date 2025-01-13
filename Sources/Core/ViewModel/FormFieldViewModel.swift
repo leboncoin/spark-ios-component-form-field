@@ -92,12 +92,16 @@ final class FormFieldViewModel<AS: SparkAttributedString>: ObservableObject {
     }
 
     func setCounter(text: String?, limit: Int?) {
+        self.setCounter(textLength: text?.count, limit: limit)
+    }
+
+    func setCounter(textLength: Int?, limit: Int?) {
         guard let limit else {
             self.secondaryHelper = nil
             return
         }
 
-        self.secondaryHelper = "\(text?.count ?? 0)/\(limit)"
+        self.secondaryHelper = "\(textLength ?? 0)/\(limit)"
     }
 
     // MARK: - Private Update

@@ -25,6 +25,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         stackView.axis = .vertical
         stackView.spacing = self.spacing
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.accessibilityUserInputLabels
         return stackView
     }()
 
@@ -73,7 +74,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         label.backgroundColor = .clear
         label.adjustsFontForContentSizeCategory = true
         label.isHidden = true
-        label.accessibilityIdentifier = FormFieldAccessibilityIdentifier.formFieldInfoMessage
+        label.accessibilityIdentifier = FormFieldAccessibilityIdentifier.formFieldSecondaryHelperMessage
         label.isAccessibilityElement = true
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
@@ -410,7 +411,14 @@ public extension FormFieldUIView where Component: UITextInput {
     /// - parameter text: the text where the characters must be counted.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
     func setCounter(on text: String?, limit: Int?) {
-        self.viewModel.setCounter(text: text, limit: limit)
+        self.viewModel.setCounter(textLength: text?.count, limit: limit)
+    }
+
+    /// Display a counter value (X/Y) in the secondary helper label with a text length and the limit.
+    /// - parameter textLength: the text length.
+    /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    func setCounter(on textLength: Int, limit: Int?) {
+        self.viewModel.setCounter(textLength: textLength, limit: limit)
     }
 }
 
@@ -422,6 +430,13 @@ public extension FormFieldUIView where Component: TextFieldAddonsUIView {
     /// - parameter text: the text where the characters must be counted.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
     func setCounter(on text: String?, limit: Int?) {
-        self.viewModel.setCounter(text: text, limit: limit)
+        self.viewModel.setCounter(textLength: text?.count, limit: limit)
+    }
+
+    /// Display a counter value (X/Y) in the secondary helper label with a text length and the limit.
+    /// - parameter textLength: the text length.
+    /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    func setCounter(on textLength: Int, limit: Int?) {
+        self.viewModel.setCounter(textLength: textLength, limit: limit)
     }
 }
