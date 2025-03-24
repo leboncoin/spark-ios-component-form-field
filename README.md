@@ -1,134 +1,65 @@
 # FormField
 
-A wrapper component which support UIView components with label and helper message (Success/Info/Error management).
+**Spark** is the [Leboncoin](https://www.leboncoin.fr/)'s _Design System_.
 
-![Figma anatomy](https://github.com/adevinta/spark-ios-component-form-field/blob/main/.github/assets/anatomy.png)
+The repository here contains only the **iOS FormField** for _SwiftUI_ and _UIKit_.
+
+You can also see all of our Spark iOS repositories on [Github](https://github.com/orgs/leboncoin/repositories?q=spark-ios+sort%3Aname-asc).
 
 ## Specifications
 
 The formfield specifications on Zeroheight is [here](https://spark.adevinta.com/1186e1705/p/590121-components).
 
-## Usage
+## Technical Documentation
 
-FormField is available on UIKit and SwiftUI.
+You are a developer ? A technical documentation in _DocC_ is available [here](https://leboncoin.github.io/spark-ios-component-form-field/).
 
-### FormFieldUIView
+### Swift Package Manager
 
-#### Parameters:
+_Note: Instructions below are for using **SPM** without the Xcode UI. It's the easiest to go to your Project Settings -> Swift Packages and add SparkFormField from there._
 
-- `theme`: The current Spark-Theme. [You can always define your own theme.](https://github.com/adevinta/spark-ios/wiki/Theming#your-own-theming)
-- `component`: The component (UIView) is covered by formfield.
-- `feedbackState`: The formfield feedback state. 'Default' or 'Error'.(There aren't design changes for Success and Info states. They will be managed with 'Default')
-- `title`: An option string. The title is rendered above the component.
-- `attributedTitle`: An option attributed string to change label of font or size.
-- `helper`: An option string. The title is rendered under the component.
-- `attributedDescription`: An option attributed string to change helper message of font or size.
-- `isTitleRequired`: A bool value to add asterisk character at the end of title for specifying required field.
-- `isEnabled`: A bool value to change wrapped component enabled state
-- `isSelected`: A bool value to change wrapped component selected state
-
-#### Subviews
-
-The FormField contains some public subviews :
-
-- `titleLabel`: The title label of the input. The label is positioned at the top left.
-- `helperLabel`: The helper label of the input. The label is positioned at the bottom left.
-- `secondaryHelperLabel`: The secondary helper label of the input. The label is positioned at the bottom right.
-
-#### Functions:
-
-If the component inside the FormField is inherit from an UITextInput (The Spark TextField and TextEditor for example), two functions to set the number of the characters are available:
+To integrate using Apple's Swift package manager, without Xcode integration, add the following as a dependency to your `Package.swift`:
 
 ```swift
-// With the text
-func setCounter(on text: String?, limit: Int?)
-
-// Or with the text length
-func setCounter(on textLength: Int, limit: Int?)
+.package(url: "https://github.com/leboncoin/spark-ios-component-form-field.git", .upToNextMajor(from: "1.0.0"))
 ```
 
-### FormFieldView
+and then specify `SparkFormField` as a dependency of the Target in which you wish to use the SparkFormField.
 
-#### Parameters:
-
-- `theme`: The current Spark-Theme. [You can always define your own theme.](https://github.com/adevinta/spark-ios/wiki/Theming#your-own-theming)
-- `component`: The component (UIView) is covered by formfield.
-- `feedbackState`: The formfield feedback state. 'Default' or 'Error'.(There aren't design changes for Success and Info states. They will be managed with 'Default')
-- `title`: An option string. The title is rendered above the component.
-- `attributedTitle`: An option attributed string to change label of font or size.
-- `helper`: An option string. The title is rendered under the component.
-- `attributedDescription`: An option attributed string to change helper message of font or size.
-- `isTitleRequired`: A bool value to add asterisk character at the end of title for specifying required field.
-
-#### Modifiers:
-
-Two modifier functions to set the number of the characters are available:
+Here's an example `Package.swift`:
 
 ```swift
-// With the text
-func counter(on text: String, limit: Int?) -> Self
+// swift-tools-version:5.9
+import PackageDescription
 
-// Or with the text length
-func counter(on textLength: Int, limit: Int?) -> Self
-```
-
-## Examples
-
-### FormFieldUIView
-
-```swift
-let component: UIView = CheckboxUIView(
-   theme: SparkTheme.shared,
-   text: "Hello World",
-   checkedImage: DemoIconography.shared.checkmark.uiImage,
-   selectionState: .unselected,
-   alignment: .left
+let package = Package(
+    name: "MyPackage",
+    platforms: [
+        .iOS(.v16)
+    ],
+    products: [
+        .library(
+            name: "MyPackage",
+            targets: ["MyPackage"]),
+    ],
+    dependencies: [
+        .package(
+            url: "https://github.com/leboncoin/spark-ios-component-form-field.git",
+            .upToNextMajor(from: "1.0.0")
+        )
+    ],
+    targets: [
+        .target(
+            name: "MyPackage",
+            dependencies: [
+                .product(
+                    name: "SparkFormField",
+                    package: "spark-ios-component-form-field"
+                ),
+            ]
+        )
+    ]
 )
-
-let formfield = FormFieldUIView(
-   theme: SparkTheme.shared,
-   component: self.component,
-   feedbackState: .default,
-   title: "Agreement",
-   helper: "Your agreement is important to us."
-)
-
-view.addSubview(formfield)
-
-NSLayoutConstraint.activate([
-  formfield.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-  formfield.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-  formfield.topAnchor.constraint(equalTo: view.topAnchor),
-  formfield.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-])
-```
-
-### FormFieldView
-
-```swift
-var component: some View {
-   CheckboxView(
-      text: "Hello World",
-      checkedImage: DemoIconography.shared.checkmark.image,
-      theme: SparkTheme.shared,
-      intent: .success,
-      selectionState: .constant(.selected)
-   )
-}
-
-var body: some View {
-    FormFieldView(
-       theme: SparkTheme.shared,
-       component: {
-          self.component
-       },
-       feedbackState: .default,
-       title: "Agreement",
-       helper: "Your agreement is important to us.",
-       isTitleRequired: false
-    )
-   .disabled(false)
-}
 ```
 
 ## License
@@ -136,7 +67,7 @@ var body: some View {
 ```
 MIT License
 
-Copyright (c) 2024 Adevinta
+Copyright (c) 2024 Leboncoin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
