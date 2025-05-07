@@ -10,15 +10,16 @@ import Combine
 import SwiftUI
 import UIKit
 import SparkTheming
+@_spi(SI_SPI) import SparkCommon
 
-final class FormFieldViewModel<AS: SparkAttributedString>: ObservableObject {
+final class FormFieldViewModel: ObservableObject {
 
-    // MARK: - Internal properties
-    @Published private(set) var title: AS?
-    @Published private(set) var titleFont: any TypographyFontToken
-    @Published private(set) var titleColor: any ColorToken
+    // MARK: - Properties
 
-    @Published var helper: AS?
+    @Published private(set) var formattedTitle: AttributedStringEither?
+    @Published private(set) var titleAccessibilityLabel: String?
+
+    @Published var helper: String?
     @Published private(set) var helperFont: any TypographyFontToken
     @Published private(set) var helperColor: any ColorToken
 
@@ -37,6 +38,19 @@ final class FormFieldViewModel<AS: SparkAttributedString>: ObservableObject {
         }
     }
 
+    var title: String? {
+        didSet {
+            self.updateTitle()
+            self.updateTitleAccessibilityLabel()
+        }
+    }
+
+    var customTitleAccessibilityLabel: String? {
+        didSet {
+            self.updateTitleAccessibilityLabel()
+        }
+    }
+
     var feedbackState: FormFieldFeedbackState {
         didSet {
             guard feedbackState != oldValue else { return }
@@ -44,52 +58,79 @@ final class FormFieldViewModel<AS: SparkAttributedString>: ObservableObject {
         }
     }
 
-    var isTitleRequired: Bool {
+    var isRequired: Bool {
         didSet {
-            guard isTitleRequired != oldValue else { return }
+            guard isRequired != oldValue else { return }
             self.updateTitle()
+            self.updateTitleAccessibilityLabel()
         }
     }
 
-    var colors: FormFieldColors
+    private let frameworkType: FrameworkType
 
-    private var colorUseCase: FormFieldColorsUseCaseable
-    private var titleUseCase: FormFieldTitleUseCaseable
-    private var userDefinedTitle: AS?
+    private let getColorsUseCase: FormFieldGetColorsUseCaseable
+    private let getFontsUseCase: FormFieldGetFontsUseCaseable
+    private let getFormattedTitleUseCase: FormFieldGetFormattedTitleUseCaseable
+    private let getTitleAccessibilityLabelUseCase: FormFieldGetTitleAccessibilityLabelUseCaseable
+
+    private var colors: FormFieldColors
+    private var fonts: FormFieldFonts
 
     // MARK: - Init
+
     init(
+        frameworkType: FrameworkType,
         theme: Theme,
         feedbackState: FormFieldFeedbackState,
-        title: AS?,
-        helper: AS?,
-        isTitleRequired: Bool = false,
-        colorUseCase: FormFieldColorsUseCaseable = FormFieldColorsUseCase(),
-        titleUseCase: FormFieldTitleUseCaseable = FormFieldTitleUseCase()
+        title: String?,
+        helper: String?,
+        isRequired: Bool = false,
+        getColorsUseCase: FormFieldGetColorsUseCaseable = FormFieldGetColorsUseCase(),
+        getFontsUseCase: FormFieldGetFontsUseCaseable = FormFieldGetFontsUseCase(),
+        getFormattedTitleUseCase: FormFieldGetFormattedTitleUseCaseable = FormFieldGetFormattedTitleUseCase(),
+        getTitleAccessibilityLabelUseCase: FormFieldGetTitleAccessibilityLabelUseCaseable = FormFieldGetTitleAccessibilityLabelUseCase()
     ) {
+        self.frameworkType = frameworkType
         self.theme = theme
         self.feedbackState = feedbackState
+
+        self.title = title
         self.helper = helper
-        self.isTitleRequired = isTitleRequired
-        self.colorUseCase = colorUseCase
-        self.titleUseCase = titleUseCase
-        self.colors = colorUseCase.execute(from: theme, feedback: feedbackState)
+
+        self.isRequired = isRequired
+
+        self.getColorsUseCase = getColorsUseCase
+        self.colors = getColorsUseCase.execute(from: theme, feedback: feedbackState)
+
+        self.getFontsUseCase = getFontsUseCase
+        self.fonts = getFontsUseCase.execute(from: theme)
+
         self.spacing = Self.spacing(from: theme)
-        self.titleFont = Self.titleFont(from: theme)
-        self.titleColor = self.colors.title
-        self.helperFont = Self.helperFont(from: theme)
+
         self.helperColor = self.colors.helper
-        self.secondaryHelperFont = Self.secondaryHelperFont(from: theme)
+        self.helperFont = self.fonts.helper
+
         self.secondaryHelperColor = self.colors.secondaryHelper
-        self.setTitle(title)
+        self.secondaryHelperFont = self.fonts.secondaryHelper
+
+        self.getFormattedTitleUseCase = getFormattedTitleUseCase
+        self.formattedTitle = getFormattedTitleUseCase.execute(
+            for: frameworkType,
+            title: title,
+            isRequired: isRequired,
+            colors: self.colors,
+            fonts: self.fonts
+        )
+
+        self.getTitleAccessibilityLabelUseCase = getTitleAccessibilityLabelUseCase
+        self.titleAccessibilityLabel = getTitleAccessibilityLabelUseCase.execute(
+            title: title,
+            customValue: nil,
+            isRequired: isRequired
+        )
     }
 
     // MARK: - Setter
-
-    func setTitle(_ title: AS?) {
-        self.userDefinedTitle = title
-        self.updateTitle()
-    }
 
     func setCounter(text: String?, limit: Int?) {
         self.setCounter(textLength: text?.count, limit: limit)
@@ -107,20 +148,35 @@ final class FormFieldViewModel<AS: SparkAttributedString>: ObservableObject {
     // MARK: - Private Update
 
     private func updateTitle() {
-        self.title = self.titleUseCase.execute(title: self.userDefinedTitle, isTitleRequired: self.isTitleRequired, colors: self.colors, typography: self.theme.typography) as? AS
+        self.formattedTitle = self.getFormattedTitleUseCase.execute(
+            for: self.frameworkType,
+            title: self.title,
+            isRequired: self.isRequired,
+            colors: self.colors,
+            fonts: self.fonts
+        )
+    }
+
+    private func updateTitleAccessibilityLabel() {
+        self.titleAccessibilityLabel = self.getTitleAccessibilityLabelUseCase.execute(
+            title: self.title,
+            customValue: self.customTitleAccessibilityLabel,
+            isRequired: self.isRequired
+        )
     }
 
     private func updateColors() {
-        self.colors = self.colorUseCase.execute(from: self.theme, feedback: self.feedbackState)
-        self.titleColor = self.colors.title
+        self.colors = self.getColorsUseCase.execute(from: self.theme, feedback: self.feedbackState)
+
         self.helperColor = self.colors.helper
         self.secondaryHelperColor = self.colors.secondaryHelper
     }
 
     private func updateFonts() {
-        self.titleFont = Self.titleFont(from: self.theme)
-        self.helperFont = Self.helperFont(from: self.theme)
-        self.secondaryHelperFont = Self.secondaryHelperFont(from: self.theme)
+        self.fonts = self.getFontsUseCase.execute(from: self.theme)
+
+        self.helperFont = self.fonts.helper
+        self.secondaryHelperFont = self.fonts.secondaryHelper
     }
 
     private func updateSpacing() {
@@ -128,18 +184,6 @@ final class FormFieldViewModel<AS: SparkAttributedString>: ObservableObject {
     }
 
     // MARK: - Static func
-
-    private static func titleFont(from theme: Theme) -> any TypographyFontToken {
-        return theme.typography.body2
-    }
-
-    private static func helperFont(from theme: Theme) -> any TypographyFontToken {
-        return theme.typography.caption
-    }
-
-    private static func secondaryHelperFont(from theme: Theme) -> any TypographyFontToken {
-        return theme.typography.caption
-    }
 
     private static func spacing(from theme: Theme) -> CGFloat {
         return theme.layout.spacing.small

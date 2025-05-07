@@ -25,13 +25,12 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         stackView.axis = .vertical
         stackView.spacing = self.spacing
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.accessibilityUserInputLabels
         return stackView
     }()
 
     /// The title label of the input. The label is positioned at the top left.
-    public let titleLabel: UILabel = {
-        let label = UILabel()
+    public lazy var titleLabel: A11YLabel = {
+        let label = A11YLabel(viewModel: self.viewModel)
         label.backgroundColor = .clear
         label.numberOfLines = 0
         label.adjustsFontForContentSizeCategory = true
@@ -88,41 +87,70 @@ public final class FormFieldUIView<Component: UIView>: UIView {
             return self.titleLabel.text
         }
         set {
-            self.viewModel.setTitle(newValue.map(NSAttributedString.init))
+            self.viewModel.title = newValue
+            self.titleLabel.accessibilityLabel = newValue
         }
     }
 
     /// The attributedTitle of formfield.
+    @available(*, deprecated, message: "Use title instead (since the 1.1.0)")
     public var attributedTitle: NSAttributedString? {
         get {
-            return self.titleLabel.attributedText
+            if let title = self.title {
+                return .init(string: title)
+            } else {
+                return nil
+            }
         }
         set {
-            self.viewModel.setTitle(newValue)
+            self.title = newValue?.string
         }
     }
 
+    @available(*, deprecated, message: "Replaced by isRequired since the 1.1.0.")
     public var isTitleRequired: Bool {
         get {
-            return self.viewModel.isTitleRequired
+            return self.isRequired
         }
         set {
-            self.viewModel.isTitleRequired = newValue
+            self.isRequired = newValue
+        }
+    }
+
+    /// The formfield is required.
+    /// If **true**, a \* will be displayed
+    public var isRequired: Bool {
+        get {
+            return self.viewModel.isRequired
+        }
+        set {
+            self.viewModel.isRequired = newValue
         }
     }
 
     /// The helper of formfield.
-    public var helperString: String? {
+    public var helper: String? {
         get {
             return self.helperLabel.text
         }
         set {
-            self.viewModel.helper = newValue.map(NSAttributedString.init)
+            self.viewModel.helper = newValue
+        }
+    }
+
+    /// The helper of formfield.
+    @available(*, deprecated, message: "Use helper instead (since the 1.1.0)")
+    public var helperString: String? {
+        get {
+            return self.helper
+        }
+        set {
+            self.helper = newValue
         }
     }
 
     /// The description of formfield.
-    @available(*, deprecated, message: "Replaced by helperString since the 0.1.1.")
+    @available(*, deprecated, message: "Replaced by helper since the 0.1.1.")
     public var descriptionString: String? {
         get {
             return self.helperString
@@ -133,12 +161,17 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     }
 
     /// The helper attributedHelper of formfield.
+    @available(*, deprecated, message: "Use helper instead (since the 1.1.0)")
     public var attributedHelper: NSAttributedString? {
         get {
-            return self.helperLabel.attributedText
+            if let helper = self.helperString {
+                return .init(string: helper)
+            } else {
+                return nil
+            }
         }
         set {
-            self.viewModel.helper = newValue
+            self.helperString = newValue?.string
         }
     }
 
@@ -181,7 +214,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         }
     }
 
-    var viewModel: FormFieldViewModel<NSAttributedString>
+    var viewModel: FormFieldViewModel
 
     private var cancellables = Set<AnyCancellable>()
     @ScaledUIMetric private var spacing: CGFloat
@@ -201,7 +234,45 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     ///   - feedbackState: The formfield feedback state. 'Default' or 'Error'.
     ///   - title: The formfield title.
     ///   - helper: The formfield helper message.
+    ///   - isRequired: The asterisk symbol at the end of title.
+    public init(
+        theme: Theme,
+        component: Component,
+        feedbackState: FormFieldFeedbackState = .default,
+        title: String? = nil,
+        helper: String? = nil,
+        isRequired: Bool = false
+    ) {
+        let viewModel = FormFieldViewModel(
+            frameworkType: .uiKit,
+            theme: theme,
+            feedbackState: feedbackState,
+            title: title,
+            helper: helper,
+            isRequired: isRequired
+        )
+
+        self.viewModel = viewModel
+        self.spacing = viewModel.spacing
+        self.component = component
+
+        super.init(frame: .zero)
+
+        self.setupViews()
+        self.setComponent()
+        self.subscribe()
+        self.updateAccessibility()
+    }
+
+    /// Initialize a formField.
+    /// - Parameters:
+    ///   - theme: The current Spark-Theme.
+    ///   - component: The component is covered by formfield.
+    ///   - feedbackState: The formfield feedback state. 'Default' or 'Error'.
+    ///   - title: The formfield title.
+    ///   - helper: The formfield helper message.
     ///   - isTitleRequired: The asterisk symbol at the end of title.
+    @available(*, deprecated, message: "Replaced by the init with the isRequired String since the 1.1.0.")
     public convenience init(
         theme: Theme,
         component: Component,
@@ -210,15 +281,13 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         helper: String? = nil,
         isTitleRequired: Bool = false
     ) {
-        let attributedTitle: NSAttributedString? = title.map(NSAttributedString.init)
-        let attributedHelper: NSAttributedString? = helper.map(NSAttributedString.init)
         self.init(
             theme: theme,
             component: component,
             feedbackState: feedbackState,
-            attributedTitle: attributedTitle,
-            attributedHelper: attributedHelper,
-            isTitleRequired: isTitleRequired
+            title: title,
+            helper: helper,
+            isRequired: isTitleRequired
         )
     }
 
@@ -246,7 +315,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
             feedbackState: feedbackState,
             title: title,
             helper: description,
-            isTitleRequired: isTitleRequired
+            isRequired: isTitleRequired
         )
     }
 
@@ -258,7 +327,8 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     ///   - attributedTitle: The formfield attributedTitle.
     ///   - attributedDescription: The formfield attributed helper message.
     ///   - isTitleRequired: The asterisk symbol at the end of title.
-    public init(
+    @available(*, deprecated, message: "Replaced by the init with the title and helper String since the 1.1.0.")
+    public convenience init(
         theme: Theme,
         component: Component,
         feedbackState: FormFieldFeedbackState = .default,
@@ -266,24 +336,14 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         attributedHelper: NSAttributedString? = nil,
         isTitleRequired: Bool = false
     ) {
-        let viewModel = FormFieldViewModel<NSAttributedString>(
+        self.init(
             theme: theme,
+            component: component,
             feedbackState: feedbackState,
-            title: attributedTitle,
-            helper: attributedHelper,
-            isTitleRequired: isTitleRequired
+            title: attributedTitle?.string,
+            helper: attributedHelper?.string,
+            isRequired: isTitleRequired
         )
-
-        self.viewModel = viewModel
-        self.spacing = viewModel.spacing
-        self.component = component
-
-        super.init(frame: .zero)
-
-        self.setupViews()
-        self.setComponent()
-        self.subscribe()
-        self.updateAccessibility()
     }
 
     /// Initialize a formField.
@@ -336,17 +396,9 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     private func subscribe() {
         // ***
         // Title
-        self.viewModel.$title.subscribe(in: &self.cancellables) { [weak self] text in
-            self?.titleLabel.isHidden = text == nil
-            self?.titleLabel.attributedText = text
-        }
-
-        self.viewModel.$titleFont.subscribe(in: &self.cancellables) { [weak self] font in
-            self?.titleLabel.font = font.uiFont
-        }
-
-        self.viewModel.$titleColor.subscribe(in: &self.cancellables) { [weak self] color in
-            self?.titleLabel.textColor = color.uiColor
+        self.viewModel.$formattedTitle.subscribe(in: &self.cancellables) { [weak self] formattedTitle in
+            self?.titleLabel.isHidden = formattedTitle == nil
+            self?.titleLabel.attributedText = formattedTitle?.leftValue
         }
         // ***
 
@@ -354,7 +406,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         // Helper
         self.viewModel.$helper.subscribe(in: &self.cancellables) { [weak self] text in
             self?.helperLabel.isHidden = text == nil
-            self?.helperLabel.attributedText = text
+            self?.helperLabel.text = text
         }
 
         self.viewModel.$helperFont.subscribe(in: &self.cancellables) { [weak self] font in
@@ -438,5 +490,36 @@ public extension FormFieldUIView where Component: TextFieldAddonsUIView {
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
     func setCounter(on textLength: Int, limit: Int?) {
         self.viewModel.setCounter(textLength: textLength, limit: limit)
+    }
+}
+
+public final class A11YLabel: UILabel {
+
+    // MARK: - Private Properties
+
+    private var _accessibilityLabel: String?
+    private let viewModel: FormFieldViewModel
+
+    // MARK: - Public Properties
+
+    public override var accessibilityLabel: String? {
+        get {
+            self.viewModel.titleAccessibilityLabel
+        }
+        set {
+            self.viewModel.customTitleAccessibilityLabel = newValue
+        }
+    }
+
+    // MARK: - Initialization
+
+    init(viewModel: FormFieldViewModel) {
+        self.viewModel = viewModel
+
+        super.init(frame: .zero)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

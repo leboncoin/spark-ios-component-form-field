@@ -45,14 +45,14 @@ final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
 
                 let view = FormFieldView(
                     theme: self.theme,
-                    component: {
-                        TextField("Your username", text: .constant(""))
-                            .textFieldStyle(.roundedBorder)
-                    },
                     feedbackState: configuration.feedbackState,
                     title: configuration.label,
                     helper: configuration.helperMessage,
-                    isTitleRequired: configuration.isRequired
+                    isRequired: configuration.isRequired,
+                    component: {
+                        TextField("Your username", text: .constant(""))
+                            .textFieldStyle(.roundedBorder)
+                    }
                 )
                 .disabled(!configuration.isEnabled)
                 .background(.background)
