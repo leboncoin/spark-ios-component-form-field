@@ -40,12 +40,27 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     }()
 
     private lazy var bottomStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [self.helperLabel, self.secondaryHelperLabel])
+        let stackView = UIStackView(arrangedSubviews: [
+            self.helperImageView,
+            self.helperLabel,
+            self.secondaryHelperLabel
+        ])
         stackView.axis = .horizontal
         stackView.spacing = self.spacing
         stackView.alignment = .top
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
+    }()
+
+    /// The helper image of the input. The image is positioned at the bottom left.
+    /// It displayed only if the `helperLabel` is visible.
+    public let helperImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = .clear
+        imageView.isHidden = true
+        imageView.accessibilityIdentifier = FormFieldAccessibilityIdentifier.formFieldHelperImage
+        imageView.isAccessibilityElement = false
+        return imageView
     }()
 
     /// The helper label of the input. The label is positioned at the bottom left.
@@ -79,7 +94,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         return label
     }()
 
-    // MARK: - Public properties.
+    // MARK: - Public properties
 
     /// The title of formfield.
     public var title: String? {
@@ -125,6 +140,15 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         }
         set {
             self.viewModel.isRequired = newValue
+        }
+    }
+
+    /// The helper image of formfield.
+    /// Displayed only if a `helper` is setted.
+    public var helperImage: UIImage? {
+        didSet {
+            self.helperImageView.image = self.helperImage
+            self.updateHelperImageVisibility()
         }
     }
 
@@ -214,10 +238,15 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         }
     }
 
-    var viewModel: FormFieldViewModel
+    // MARK: - Private Properties
+
+    private var viewModel: FormFieldViewModel
 
     private var cancellables = Set<AnyCancellable>()
     @ScaledUIMetric private var spacing: CGFloat
+    @ScaledUIMetric private var helperImageSize: CGFloat = FormFieldConstants.helperImageSize
+
+    private var helperImageSizeWidthLayoutConstraint: NSLayoutConstraint?
 
     // MARK: - Initialization
 
@@ -325,7 +354,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     ///   - component: The component is covered by formfield.
     ///   - feedbackState: The formfield feedback state. 'Default' or 'Error'.
     ///   - attributedTitle: The formfield attributedTitle.
-    ///   - attributedDescription: The formfield attributed helper message.
+    ///   - attributedHelper: The formfield attributed helper message.
     ///   - isTitleRequired: The asterisk symbol at the end of title.
     @available(*, deprecated, message: "Replaced by the init with the title and helper String since the 1.1.0.")
     public convenience init(
@@ -389,6 +418,17 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(self.stackView)
         NSLayoutConstraint.stickEdges(from: self.stackView, to: self)
+
+        self.helperImageView.translatesAutoresizingMaskIntoConstraints = false
+        self.helperImageSizeWidthLayoutConstraint = self.helperImageView.widthAnchor.constraint(equalToConstant: self.helperImageSize)
+        self.helperImageSizeWidthLayoutConstraint?.isActive = true
+        self.helperImageView.heightAnchor.constraint(equalTo: self.helperImageView.widthAnchor).isActive = true
+
+        self.helperLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.helperLabel.heightAnchor.constraint(greaterThanOrEqualTo: self.helperImageView.heightAnchor).isActive = true
+
+        self.secondaryHelperLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.secondaryHelperLabel.heightAnchor.constraint(greaterThanOrEqualTo: self.helperImageView.heightAnchor).isActive = true
     }
 
     // MARK: - Subscription
@@ -407,6 +447,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         self.viewModel.$helper.subscribe(in: &self.cancellables) { [weak self] text in
             self?.helperLabel.isHidden = text == nil
             self?.helperLabel.text = text
+            self?.updateHelperImageVisibility()
         }
 
         self.viewModel.$helperFont.subscribe(in: &self.cancellables) { [weak self] font in
@@ -415,6 +456,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
 
         self.viewModel.$helperColor.subscribe(in: &self.cancellables) { [weak self] color in
             self?.helperLabel.textColor = color.uiColor
+            self?.helperImageView.tintColor = color.uiColor
         }
         // ***
 
@@ -441,6 +483,18 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         }
     }
 
+    // MARK: - Update
+
+    private func updateHelperImageVisibility() {
+        let isHidden = if self.helperImageView.image != nil && !self.helperLabel.isHidden {
+            self.traitCollection.preferredContentSizeCategory.isAccessibilityCategory
+        } else {
+            true
+        }
+
+        self.helperImageView.isHidden = isHidden
+    }
+
     // MARK: - Trait Collection
 
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -450,6 +504,10 @@ public final class FormFieldUIView<Component: UIView>: UIView {
 
         self._spacing.update(traitCollection: traitCollection)
         self.stackView.spacing = self.spacing
+
+        self._helperImageSize.update(traitCollection: traitCollection)
+        self.helperImageSizeWidthLayoutConstraint?.constant = self.helperImageSize
+        self.helperImageView.updateConstraintsIfNeeded()
     }
 }
 

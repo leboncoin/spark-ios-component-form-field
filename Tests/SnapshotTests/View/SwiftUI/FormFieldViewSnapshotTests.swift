@@ -46,14 +46,16 @@ final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
                 let view = FormFieldView(
                     theme: self.theme,
                     feedbackState: configuration.feedbackState,
-                    title: configuration.label,
-                    helper: configuration.helperMessage,
+                    title: configuration.title,
+                    helper: configuration.helper,
+                    helperImage: Image(configuration.helperImageName),
                     isRequired: configuration.isRequired,
                     component: {
                         TextField("Your username", text: .constant(""))
                             .textFieldStyle(.roundedBorder)
                     }
                 )
+                .counter(on: configuration)
                 .disabled(!configuration.isEnabled)
                 .background(.background)
                 .frame(width: Constants.maxWidth)
@@ -69,5 +71,32 @@ final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
                 )
             }
         }
+    }
+}
+
+// MARK: - Extension
+
+private extension FormFieldView {
+
+    func counter(on configuration: FormFieldConfigurationSnapshotTests) -> Self {
+        return if configuration.isCounter {
+            self.counter(
+                on: FormFieldSnapshotConstants.Counter.text,
+                limit: FormFieldSnapshotConstants.Counter.limit
+            )
+        } else {
+            self
+        }
+    }
+}
+
+private extension Image {
+
+    init?(_ imageName: String?) {
+        guard let imageName else {
+            return nil
+        }
+
+        self.init(systemName: imageName)
     }
 }
