@@ -9,5 +9,6 @@
 import Foundation
 
 enum FormFieldConstants {
-    static let helperImageSize: CGFloat = 18
+    static let iconSize: CGFloat = 18
+    static let defaultTitle = String(localized: "clear", bundle: .current)
 }

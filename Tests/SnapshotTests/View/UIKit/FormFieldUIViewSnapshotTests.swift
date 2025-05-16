@@ -48,6 +48,7 @@ final class FormFieldUIViewSnapshotTests: UIKitComponentSnapshotTestCase {
                     isRequired: configuration.isRequired
                 )
 
+                view.clearButtonImage = .init(configuration.clearButtonImageName)
                 view.helperImage = .init(configuration.helperImageName)
 
                 if configuration.isCounter {

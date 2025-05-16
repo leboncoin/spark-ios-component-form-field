@@ -55,6 +55,7 @@ final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
                             .textFieldStyle(.roundedBorder)
                     }
                 )
+                .clearButton(on: configuration)
                 .counter(on: configuration)
                 .disabled(!configuration.isEnabled)
                 .background(.background)
@@ -77,6 +78,14 @@ final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
 // MARK: - Extension
 
 private extension FormFieldView {
+
+    func clearButton(on configuration: FormFieldConfigurationSnapshotTests) -> Self {
+        return if let image = Image(configuration.clearButtonImageName) {
+            self.clearButton(icon: image, action: {})
+        } else {
+            self
+        }
+    }
 
     func counter(on configuration: FormFieldConfigurationSnapshotTests) -> Self {
         return if configuration.isCounter {
