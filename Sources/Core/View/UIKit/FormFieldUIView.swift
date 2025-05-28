@@ -15,7 +15,34 @@ import SparkTextInput
 
 // TODO: compression resistance
 
-/// The *FormFieldUIView* renders a component with title and subtitle using UIKit.
+/// The **Spark** FormField for UIKit provide context to your form elements easily.
+///
+/// FormField provide context to your form elements easily,
+/// unifying an a proper way to show a label, required marker,
+/// help & status messages or counter in any input/field components.
+///
+/// Implementation example :
+/// ```swift
+/// let theme: SparkTheming.Theme = MyTheme()
+/// let component = UITextField()
+///
+/// let formField = FormFieldUIView(
+///     theme: theme,
+///     component: component,
+///     feedbackState: .default,
+///     title: "Email (exemple@mail.fr)",
+///     helper: "Please provide a valid email (exemple@mail.fr)",
+///     isTitleRequired: true
+/// )
+/// formField.clearButtonImage = UIImage(systemName: "xmark.circle")
+/// formFieldView.clearButton.addAction(.init(handler: { _ in
+///     print("Clear tapped")
+/// }), for: .touchUpInside)
+/// formField.helperImage = UIImage(systemName: "exclamationmark.circle")
+/// self.addSubview(formField)
+/// ```
+///
+/// ![FormField rendering with TextField.](component.png)
 public final class FormFieldUIView<Component: UIView>: UIView {
 
     // MARK: - Components
@@ -32,10 +59,13 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     }()
 
     private lazy var headerStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [
+        let stackView = AdaptiveUIStackView(arrangedSubviews: [
             self.titleLabel,
             self.clearButtonStackView
         ])
+        stackView.regularAxis = .horizontal
+        stackView.accessibilityAxis = .vertical
+        stackView.accessibilityInterfaceSizeClass = .compact
         stackView.alignment = .fill
         stackView.distribution = .fill
         return stackView
@@ -59,10 +89,15 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         spacingView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         spacingView.isAccessibilityElement = false
 
-        let stackView = UIStackView(arrangedSubviews: [
+        let stackView = AdaptiveUIStackView(arrangedSubviews: [
             spacingView,
             self.clearButton
         ])
+        stackView.alignment = .bottom
+        stackView.accessibilityAlignment = .trailing
+        stackView.distribution = .fill
+        stackView.accessibilityDistribution = .equalCentering
+        stackView.accessibilityInterfaceSizeClass = .compact
         stackView.isHidden = true
         return stackView
     }()
@@ -90,10 +125,13 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     }()
 
     private lazy var footerStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [
+        let stackView = AdaptiveUIStackView(arrangedSubviews: [
             self.helperStackView,
             self.secondaryHelperStackView
         ])
+        stackView.regularAxis = .horizontal
+        stackView.accessibilityAxis = .vertical
+        stackView.accessibilityInterfaceSizeClass = .compact
         stackView.alignment = .fill
         stackView.distribution = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -144,10 +182,16 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         spacingView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         spacingView.isAccessibilityElement = false
 
-        return UIStackView(arrangedSubviews: [
+        let stackView = AdaptiveUIStackView(arrangedSubviews: [
             spacingView,
             self.secondaryHelperLabel
         ])
+        stackView.alignment = .bottom
+        stackView.accessibilityAlignment = .trailing
+        stackView.distribution = .fill
+        stackView.accessibilityDistribution = .equalCentering
+        stackView.accessibilityInterfaceSizeClass = .compact
+        return stackView
     }()
 
     /// The secondary helper label of the input. The label is positioned at the bottom right.
@@ -345,6 +389,24 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     ///   - title: The formfield title.
     ///   - helper: The formfield helper message.
     ///   - isRequired: The asterisk symbol at the end of title.
+    ///
+    /// Implementation example :
+    /// ```swift
+    /// let theme: SparkTheming.Theme = MyTheme()
+    /// let component = UITextField()
+    ///
+    /// let formField = FormFieldUIView(
+    ///     theme: theme,
+    ///     component: component,
+    ///     feedbackState: .default,
+    ///     title: "Email (exemple@mail.fr)",
+    ///     helper: "Please provide a valid email (exemple@mail.fr)",
+    ///     isTitleRequired: true
+    /// )
+    /// self.addSubview(formField)
+    /// ```
+    ///
+    /// ![FormField rendering with TextField.](component.png)
     public init(
         theme: Theme,
         component: Component,
@@ -372,7 +434,6 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         self.setComponent()
         self.subscribe()
         self.updateAccessibility()
-        self.updateStacks()
     }
 
     /// Initialize a formField.
@@ -402,7 +463,6 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         )
     }
 
-    // TODO: depercated and helper
     /// Initialize a formField.
     /// - Parameters:
     ///   - theme: The current Spark-Theme.
@@ -587,23 +647,6 @@ public final class FormFieldUIView<Component: UIView>: UIView {
 
     // MARK: - Update
 
-    private func updateStacks() {
-        let isAccessibilityCategory = self.traitCollection.preferredContentSizeCategory.isAccessibilityCategory && self.traitCollection.horizontalSizeClass == .compact
-
-        let mainStackAxis: NSLayoutConstraint.Axis = isAccessibilityCategory ? .vertical : .horizontal
-        let rightChildStackAlignment: UIStackView.Alignment = isAccessibilityCategory ? .trailing : .bottom
-        let rightChildStackDistribution: UIStackView.Distribution = isAccessibilityCategory ? .equalCentering : .fill
-
-        self.headerStackView.axis = mainStackAxis
-        self.footerStackView.axis = mainStackAxis
-
-        self.clearButtonStackView.alignment = rightChildStackAlignment
-        self.clearButtonStackView.distribution = rightChildStackDistribution
-
-        self.secondaryHelperStackView.alignment = rightChildStackAlignment
-        self.secondaryHelperStackView.distribution = rightChildStackDistribution
-    }
-
     private func updateSpacing() {
         self.stackView.spacing = self.spacing
         self.headerStackView.spacing = self.spacing
@@ -648,8 +691,6 @@ public final class FormFieldUIView<Component: UIView>: UIView {
             self.helperIconSizeWidthLayoutConstraint?.constant = self.iconSize
             self.helperImageView.updateConstraintsIfNeeded()
         }
-
-        self.updateStacks()
     }
 }
 
@@ -662,6 +703,8 @@ public extension FormFieldUIView where Component: UITextInput {
     /// Display a counter value (X/Y) in the secondary helper label with a text and the limit.
     /// - parameter text: the text where the characters must be counted.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    ///
+    /// ![FormField rendering with counter.](component_counter.png)
     func setCounter(on text: String?, limit: Int?) {
         self.viewModel.setCounter(textLength: text?.count, limit: limit)
     }
@@ -669,6 +712,8 @@ public extension FormFieldUIView where Component: UITextInput {
     /// Display a counter value (X/Y) in the secondary helper label with a text length and the limit.
     /// - parameter textLength: the text length.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    ///
+    /// ![FormField rendering with counter.](component_counter.png)
     func setCounter(on textLength: Int, limit: Int?) {
         self.viewModel.setCounter(textLength: textLength, limit: limit)
     }
@@ -681,6 +726,8 @@ public extension FormFieldUIView where Component: TextFieldAddonsUIView {
     /// Display a counter value (X/Y) in the secondary helper label with a text and the limit.
     /// - parameter text: the text where the characters must be counted.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    ///
+    /// ![FormField rendering with counter.](component_counter.png)
     func setCounter(on text: String?, limit: Int?) {
         self.viewModel.setCounter(textLength: text?.count, limit: limit)
     }
@@ -688,6 +735,8 @@ public extension FormFieldUIView where Component: TextFieldAddonsUIView {
     /// Display a counter value (X/Y) in the secondary helper label with a text length and the limit.
     /// - parameter textLength: the text length.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    ///
+    /// ![FormField rendering with counter.](component_counter.png)
     func setCounter(on textLength: Int, limit: Int?) {
         self.viewModel.setCounter(textLength: textLength, limit: limit)
     }

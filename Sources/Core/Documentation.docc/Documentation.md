@@ -24,56 +24,51 @@ With a clear button
 
 ## A11y
 
-TODO: 
+### Order
 
-Only the **decrement** and **increment** buttons are accessible. 
-
-The text between the two buttons is not accessible but the **value** of the text *is read by the buttons*.
+The reading order is as follows :
+- Title
+- Clear Button
+- Content
+- Helper
+- Secondary Helper
 
 ### Label
 
 #### Default Value
 
-The **decrement** and **increment** buttons *accessibility labels* using **localization** (english and french only).
+The **require** value (*) and the **clear button** buttons *accessibility labels* using **localization** (english and french only).
 
 The default values are :
 
-- Decrement : 
-    - English : **Decrement**
-    - French : **Décrémenter**
+- Require : 
+    - English : **Mandatory**
+    - French : **Obligatoire**
 
-- Increment : 
-    - English : **Increment**
-    - French : **Incrémenter**
+- Clear Button : 
+    - English : **Clear**
+    - French : **Effacer**
 
 #### Override Value
 
-You can override the decrement and increment accessibilty labels with : 
-- UIKit :
-    - Decrement : ``SparkUIStepper/customDecrementAccessibilityLabel``
-    - Increment : ``SparkUIStepper/customIncrementAccessibilityLabel``
+You can update accessibility Label and Value:
+- UIKit : ``FormFieldUIView`` then override the **.accessibilityLabel** and **.accessibilityValue** on subviews :
+    - ``FormFieldUIView/titleLabel``
+    - ``FormFieldUIView/clearButton``
+    - ``FormFieldUIView/helperLabel``
+    - ``FormFieldUIView/secondaryHelperLabel``
 
-- SwiftUI :
-    - Decrement : ``SparkStepper/SparkStepper/decrementAccessibilityLabel(_:)``
-    - Increment : ``SparkStepper/SparkStepper/incrementAccessibilityLabel(_:)`` 
-
----
-
-You can also add some **context** (the name of the stepper for example like *"Number of people"*):
-- UIKit : ``SparkUIStepper/contextAccessibilityLabel``
-- SwiftUI : ``SparkStepper/SparkStepper/contextAccessibilityLabel(_:)``
-
-Example with a **context** setted to *Number of people* :
-- Decrement : 
-    - English : **Number of people, Decrement**
-    - French : **Nombre de personne, Décrémenter**
-
-- Increment : 
-    - English : **Number of people, Increment**
-    - French : **Nombre de personne, Incrémenter**
+- SwiftUI : 
+    - Title : ``FormFieldView/titleAccessibilityLabel(_:)``
+    - Clear Button : ``FormFieldView/clearButtonAccessibilityLabel(_:)``
+    - Helper : ``FormFieldView/helperAccessibilityLabel(_:)``
+    - Secondary Helper : ``FormFieldView/secondaryHelperAccessibilityLabel(_:)``
+    - Secondary Helper (Value) :``FormFieldView/secondaryHelperAccessibilityValue(_:)``
 
 ## Resources
 
 - Specification on [ZeroHeight](https://zeroheight.com/1186e1705/p/423a01-form-field)
 - Desing on [Figma](https://www.figma.com/design/0QchRdipAVuvVoDfTjLrgQ/Spark-Component-Specs?node-id=44899-1278)
 - Discussion on [Slack](https://adevinta.slack.com/archives/C071PA3MWAK)
+
+
