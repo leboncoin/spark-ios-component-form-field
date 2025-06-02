@@ -26,7 +26,7 @@ With a clear button
 
 ### Order
 
-The reading order is as follows :
+The reading order is as follows:
 - Title
 - Clear Button
 - Content
@@ -39,31 +39,31 @@ The reading order is as follows :
 
 The **require** value (*) and the **clear button** buttons *accessibility labels* using **localization** (english and french only).
 
-The default values are :
+The default values are:
 
-- Require : 
-    - English : **Mandatory**
-    - French : **Obligatoire**
+- Require: 
+    - English: **Mandatory**
+    - French: **Obligatoire**
 
-- Clear Button : 
-    - English : **Clear**
-    - French : **Effacer**
+- Clear Button: 
+    - English: **Clear**
+    - French: **Effacer**
 
 #### Override Value
 
 You can update accessibility Label and Value:
-- UIKit : ``FormFieldUIView`` then override the **.accessibilityLabel** and **.accessibilityValue** on subviews :
+- UIKit: ``FormFieldUIView`` then override the **.accessibilityLabel** and **.accessibilityValue** on subviews:
     - ``FormFieldUIView/titleLabel``
     - ``FormFieldUIView/clearButton``
     - ``FormFieldUIView/helperLabel``
     - ``FormFieldUIView/secondaryHelperLabel``
 
-- SwiftUI : 
-    - Title : ``FormFieldView/titleAccessibilityLabel(_:)``
-    - Clear Button : ``FormFieldView/clearButtonAccessibilityLabel(_:)``
-    - Helper : ``FormFieldView/helperAccessibilityLabel(_:)``
-    - Secondary Helper : ``FormFieldView/secondaryHelperAccessibilityLabel(_:)``
-    - Secondary Helper (Value) :``FormFieldView/secondaryHelperAccessibilityValue(_:)``
+- SwiftUI: 
+    - Title: ``FormFieldView/titleAccessibilityLabel(_:)``
+    - Clear Button: ``FormFieldView/clearButtonAccessibilityLabel(_:)``
+    - Helper: ``FormFieldView/helperAccessibilityLabel(_:)``
+    - Secondary Helper: ``FormFieldView/secondaryHelperAccessibilityLabel(_:)``
+    - Secondary Helper (Value):``FormFieldView/secondaryHelperAccessibilityValue(_:)``
 
 ## Resources
 

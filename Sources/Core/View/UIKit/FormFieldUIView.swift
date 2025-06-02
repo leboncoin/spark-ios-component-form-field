@@ -21,7 +21,7 @@ import SparkTextInput
 /// unifying an a proper way to show a label, required marker,
 /// help & status messages or counter in any input/field components.
 ///
-/// Implementation example :
+/// Implementation example:
 /// ```swift
 /// let theme: SparkTheming.Theme = MyTheme()
 /// let component = UITextField()
@@ -102,7 +102,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     }()
 
     /// The clear button of the input. The button is positioned at the top right.
-    /// Note : The label has a default *horizontal compression resistance priority* at **.required**.
+    /// Note: The label has a default *horizontal compression resistance priority* at **.required**.
     public lazy var clearButton: UIButton = {
         var configuration = UIButton.Configuration.plain()
         configuration.title = FormFieldConstants.defaultTitle
@@ -194,7 +194,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     }()
 
     /// The secondary helper label of the input. The label is positioned at the bottom right.
-    /// Note : The label has a default *horizontal compression resistance priority* at **.required**.
+    /// Note: The label has a default *horizontal compression resistance priority* at **.required**.
     public let secondaryHelperLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .right
@@ -389,7 +389,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     ///   - helper: The formfield helper message.
     ///   - isRequired: The asterisk symbol at the end of title.
     ///
-    /// Implementation example :
+    /// Implementation example:
     /// ```swift
     /// let theme: SparkTheming.Theme = MyTheme()
     /// let component = UITextField()

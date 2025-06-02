@@ -16,7 +16,7 @@ import SparkTheming
 /// unifying an a proper way to show a label, required marker,
 /// help & status messages or counter in any input/field components.
 ///
-/// Implementation example :
+/// Implementation example:
 /// ```swift
 /// struct MyView: View {
 ///     let theme: SparkTheming.Theme = MyTheme()
@@ -75,7 +75,7 @@ public struct FormFieldView<Component: View>: View {
     ///   - isRequired: Add an asterisk symbol at the end of title if the value is true.
     ///   - component: The component is covered by formfield.
     ///
-    /// Implementation example :
+    /// Implementation example:
     /// ```swift
     /// struct MyView: View {
     ///     let theme: SparkTheming.Theme = MyTheme()
