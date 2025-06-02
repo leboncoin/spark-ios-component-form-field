@@ -36,7 +36,6 @@ import SparkTextInput
 /// )
 /// formField.clearButtonImage = UIImage(systemName: "xmark.circle")
 /// formFieldView.clearButton.addAction(.init(handler: { _ in
-///     print("Clear tapped")
 /// }), for: .touchUpInside)
 /// formField.helperImage = UIImage(systemName: "exclamationmark.circle")
 /// self.addSubview(formField)

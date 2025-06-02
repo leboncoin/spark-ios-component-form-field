@@ -35,7 +35,6 @@ import SparkTheming
 ///             }
 ///         )
 ///         .clearButton(icon: Image(systemName: "xmark.circle")) {
-///             print("Clear tapped")
 ///          }
 ///         .counter(on: text, limit: 100)
 ///     }
