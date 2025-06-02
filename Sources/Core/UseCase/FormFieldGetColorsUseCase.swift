@@ -1,5 +1,5 @@
 //
-//  FormFieldColorsUseCase.swift
+//  FormFieldGetColorsUseCase.swift
 //  SparkFormField
 //
 //  Created by alican.aycil on 31.01.24.
@@ -9,27 +9,27 @@
 import SparkTheming
 
 // sourcery: AutoMockable
-protocol FormFieldColorsUseCaseable {
+protocol FormFieldGetColorsUseCaseable {
     func execute(from theme: Theme, feedback state: FormFieldFeedbackState) -> FormFieldColors
 }
 
-struct FormFieldColorsUseCase: FormFieldColorsUseCaseable {
+struct FormFieldGetColorsUseCase: FormFieldGetColorsUseCaseable {
 
     func execute(from theme: Theme, feedback state: FormFieldFeedbackState) -> FormFieldColors {
         let commonColor = theme.colors.base.onSurface.opacity(theme.dims.dim1)
         switch state {
         case .default:
-            return FormFieldColors(
+            return .init(
                 title: theme.colors.base.onSurface,
+                require: commonColor,
                 helper: commonColor,
-                asterisk: commonColor,
                 secondaryHelper: commonColor
             )
         case .error:
-            return FormFieldColors(
+            return .init(
                 title: theme.colors.base.onSurface,
+                require: commonColor,
                 helper: theme.colors.feedback.error,
-                asterisk: commonColor,
                 secondaryHelper: commonColor
             )
         }

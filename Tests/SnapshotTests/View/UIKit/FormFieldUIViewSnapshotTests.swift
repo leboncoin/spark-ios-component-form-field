@@ -2,7 +2,7 @@
 //  FormFieldUIViewSnapshotTests.swift
 //  SparkFormFieldSnapshotTests
 //
-//  Created by alican.aycil on 14.04.24.
+//  Created by robin.lemaire on 06/05/25.
 //  Copyright © 2024 Leboncoin. All rights reserved.
 //
 
@@ -45,7 +45,7 @@ final class FormFieldUIViewSnapshotTests: UIKitComponentSnapshotTestCase {
                     feedbackState: configuration.feedbackState,
                     title: configuration.label,
                     helper: configuration.helperMessage,
-                    isTitleRequired: configuration.isRequired
+                    isRequired: configuration.isRequired
                 )
 
                 if configuration.isCounter {
