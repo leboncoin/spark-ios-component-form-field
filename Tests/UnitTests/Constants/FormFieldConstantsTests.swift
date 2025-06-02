@@ -17,7 +17,7 @@ final class FormFieldConstantsTests: XCTestCase {
         // GIVEN / WHEN / THEN
         XCTAssertEqual(
             FormFieldConstants.helperImageSize,
-            16
+            18
         )
     }
 }

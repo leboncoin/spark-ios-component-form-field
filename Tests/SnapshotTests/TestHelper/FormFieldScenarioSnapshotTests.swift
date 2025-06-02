@@ -170,7 +170,7 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
             "infinity.circle",
             nil
         ]
-        
+
         let isCounters: [Bool] = [true, false]
 
         return helpers.flatMap { helper in

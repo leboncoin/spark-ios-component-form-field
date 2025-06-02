@@ -25,7 +25,7 @@ final class FormFieldViewSnapshotTests: SwiftUIComponentSnapshotTestCase {
 
     // MARK: - Tests
 
-    func test() { 
+    func test() {
         let scenarios = FormFieldScenarioSnapshotTests.allCases
 
         var _isOn: Bool = true
