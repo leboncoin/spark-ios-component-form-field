@@ -52,8 +52,9 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///
     /// Content:
     ///  - feedbackState: all
-    ///  - label: short
-    ///  - helperMessage: short
+    ///  - title: short
+    ///  - helper: short
+    ///  - helperImage: nil
     ///  - isCounter: false
     ///  - isRequired: false,
     ///  - isEnabled: true
@@ -66,8 +67,9 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
                 return .init(
                     scenario: self,
                     feedbackState: feedbackState,
-                    label: "Agreement",
-                    helperMessage: "Your agreement is important.",
+                    title: "Agreement",
+                    helper: "Your agreement is important.",
+                    helperImageName: nil,
                     isCounter: false,
                     isRequired: false,
                     isEnabled: true,
@@ -79,30 +81,32 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
 
     /// Test 2
     ///
-    /// Description: To test label's content resilience
+    /// Description: To test title's content resilience
     ///
     /// Content:
     ///  - feedbackState: 'default'
-    ///  - label: all
-    ///  - helperMessage: short
+    ///  - title: all
+    ///  - helper: short
+    ///  - helperImage: nil
     ///  - isCounter: true
     ///  - isRequired: false,
     ///  - isEnabled: true
     ///  - modes: light
     ///  - sizes (accessibility): default
     private func test2() -> [FormFieldConfigurationSnapshotTests] {
-        let labels: [String?] = [
+        let titles: [String?] = [
             "Lorem Ipsum",
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
             nil
         ]
 
-        return labels.map { label in
+        return titles.map { title in
             return .init(
                 scenario: self,
                 feedbackState: .default,
-                label: label,
-                helperMessage: "Your agreement is important.",
+                title: title,
+                helper: "Your agreement is important.",
+                helperImageName: nil,
                 isCounter: true,
                 isRequired: false,
                 isEnabled: true,
@@ -118,8 +122,9 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///
     /// Content:
     ///  - feedbackState: 'default'
-    ///  - label: all
-    ///  - helperMessage: short
+    ///  - title: all
+    ///  - helper: short
+    ///  - helperImage: nil
     ///  - isCounter: false
     ///  - isRequired: false,
     ///  - isEnabled: true
@@ -129,8 +134,9 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
         return [.init(
             scenario: self,
             feedbackState: .default,
-            label: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-            helperMessage: "Your agreement is important.",
+            title: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+            helper: "Your agreement is important.",
+            helperImageName: nil,
             isCounter: false,
             isRequired: true,
             isEnabled: true,
@@ -145,32 +151,45 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///
     /// Content:
     ///  - feedbackState: error
-    ///  - label: short
-    ///  - helperMessage: all
-    ///  - isCounter: true
+    ///  - title: short
+    ///  - helper: all
+    ///  - helperImage: all
+    ///  - isCounter: all
     ///  - isRequired: false,
     ///  - isEnabled: true
     ///  - modes: light
     ///  - sizes (accessibility): default
     private func test4() -> [FormFieldConfigurationSnapshotTests] {
-        let messages: [String?] = [
+        let helpers: [String?] = [
             "Lorem Ipsum",
             "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
             nil
         ]
 
-        return messages.map { message in
-            return .init(
-                scenario: self,
-                feedbackState: .error,
-                label: "Agreement",
-                helperMessage: message,
-                isCounter: true,
-                isRequired: false,
-                isEnabled: true,
-                modes: Constants.Modes.default,
-                sizes: Constants.Sizes.default
-            )
+        let imagesNames: [String?] = [
+            "infinity.circle",
+            nil
+        ]
+
+        let isCounters: [Bool] = [true, false]
+
+        return helpers.flatMap { helper in
+            imagesNames.flatMap { imageName in
+                isCounters.map { isCounter in
+                    return .init(
+                        scenario: self,
+                        feedbackState: .error,
+                        title: "Agreement",
+                        helper: helper,
+                        helperImageName: imageName,
+                        isCounter: isCounter,
+                        isRequired: false,
+                        isEnabled: true,
+                        modes: Constants.Modes.default,
+                        sizes: Constants.Sizes.default
+                    )
+                }
+            }
         }
     }
 
@@ -180,8 +199,9 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///
     /// Content:
     ///  - feedbackState: 'default'
-    ///  - label: short
-    ///  - helperMessage: short
+    ///  - title: short
+    ///  - helper: short
+    ///  - helperImage: true,
     ///  - isCounter: false
     ///  - isRequired: false,
     ///  - isEnabled: true
@@ -194,8 +214,9 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
             return .init(
                 scenario: self,
                 feedbackState: feedbackState,
-                label: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                helperMessage: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+                title: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                helper: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+                helperImageName: "infinity.circle",
                 isCounter: false,
                 isRequired: false,
                 isEnabled: false,
@@ -211,8 +232,9 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///
     /// Content:
     ///  - feedbackState: all
-    ///  - label: short
-    ///  - helperMessage: short
+    ///  - title: short
+    ///  - helper: short
+    ///  - helperImage: nil
     ///  - isCounter: false
     ///  - isRequired: false,
     ///  - isEnabled: false
@@ -225,8 +247,9 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
             return .init(
                 scenario: self,
                 feedbackState: feedbackState,
-                label: "Agreement",
-                helperMessage: "Your agreement is important.",
+                title: "Agreement",
+                helper: "Your agreement is important.",
+                helperImageName: nil,
                 isCounter: false,
                 isRequired: false,
                 isEnabled: true,
@@ -242,8 +265,9 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
     ///
     /// Content:
     ///  - feedbackState: error
-    ///  - label: short
-    ///  - helperMessage: short
+    ///  - title: short
+    ///  - helper: short
+    ///  - helperImage: nil
     ///  - isCounter: false
     ///  - isRequired: false,
     ///  - isEnabled: false
@@ -254,8 +278,9 @@ enum FormFieldScenarioSnapshotTests: String, CaseIterable {
         return [.init(
             scenario: self,
             feedbackState: .error,
-            label: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-            helperMessage: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+            title: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+            helper: "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+            helperImageName: nil,
             isCounter: false,
             isRequired: true,
             isEnabled: true,

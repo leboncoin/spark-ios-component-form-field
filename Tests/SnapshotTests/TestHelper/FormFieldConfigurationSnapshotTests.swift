@@ -16,8 +16,9 @@ struct FormFieldConfigurationSnapshotTests {
 
     let scenario: FormFieldScenarioSnapshotTests
     let feedbackState: FormFieldFeedbackState
-    let label: String?
-    let helperMessage: String?
+    let title: String?
+    let helper: String?
+    let helperImageName: String?
     let isCounter: Bool
     let isRequired: Bool
     let isEnabled: Bool
@@ -29,10 +30,15 @@ struct FormFieldConfigurationSnapshotTests {
     func testName() -> String {
         return [
             "\(self.scenario.rawValue)",
-            "\(self.feedbackState)",
-            "IsRequired:\(self.isRequired)",
-            "IsEnabled:\(self.isEnabled)",
-            "IsCounter:\(self.isCounter)"
-        ].joined(separator: "-")
+            "\(self.feedbackState)" + "FeedbackState",
+            self.title != nil ? "withTitle" : nil,
+            self.helper != nil ? "withHelper" : nil,
+            self.helperImageName != nil ? "withHelperImage" : nil,
+            self.isRequired ? "isRequired" : nil,
+            self.isEnabled ? "isEnabled" : nil,
+            self.isCounter ? "isCounter" : nil
+        ]
+            .compactMap { $0 }
+            .joined(separator: "-")
     }
 }

@@ -9,6 +9,12 @@
 import Foundation
 
 enum FormFieldSnapshotConstants {
+
+    enum Counter {
+        static let text = "My Text"
+        static let limit = 100
+    }
+
     static let maxWidth: CGFloat = 300
     static let padding: CGFloat = 12
 }

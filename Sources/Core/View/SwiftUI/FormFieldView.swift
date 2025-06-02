@@ -16,7 +16,12 @@ public struct FormFieldView<Component: View>: View {
 
     @ObservedObject private var viewModel: FormFieldViewModel
     @ScaledMetric private var spacing: CGFloat
+
+    private let helperImage: Image?
     private let component: Component
+
+    @ScaledMetric private var helperImageSize = FormFieldConstants.helperImageSize
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State private var titleAccessibility: Accessibility = .init()
     private var helperAccessibility: Accessibility = .init()
@@ -30,6 +35,7 @@ public struct FormFieldView<Component: View>: View {
     ///   - feedbackState: The formfield feedback state. 'Default' or 'Error'.
     ///   - title: The formfield title.
     ///   - helper: The formfield helper message.
+    ///   - helperImage: The helper image displayed to the left of the helper text. **Displayed only if helper is setted**.
     ///   - isRequired: Add an asterisk symbol at the end of title if the value is true.
     ///   - component: The component is covered by formfield.
     public init(
@@ -37,6 +43,7 @@ public struct FormFieldView<Component: View>: View {
         feedbackState: FormFieldFeedbackState = .default,
         title: String? = nil,
         helper: String? = nil,
+        helperImage: Image? = nil,
         isRequired: Bool = false,
         @ViewBuilder component: @escaping () -> Component
     ) {
@@ -51,7 +58,11 @@ public struct FormFieldView<Component: View>: View {
 
         self.viewModel = viewModel
         self._spacing = ScaledMetric(wrappedValue: viewModel.spacing)
+        self._spacing = ScaledMetric(wrappedValue: viewModel.spacing)
+
+        self.helperImage = helperImage
         self.component = component()
+
         self.titleAccessibility.label = viewModel.titleAccessibilityLabel
     }
 
@@ -117,7 +128,7 @@ public struct FormFieldView<Component: View>: View {
     ///   - component: The component is covered by formfield.
     ///   - feedbackState: The formfield feedback state. 'Default' or 'Error'.
     ///   - attributedTitle: The formfield attributedTitle.
-    ///   - attributedDescription: The formfield attributed helper message.
+    ///   - attributedHelper: The formfield attributed helper message.
     ///   - isTitleRequired: The asterisk symbol at the end of title.
     @available(*, deprecated, message: "Replaced by the init with the title and helper String since the 1.1.0.")
     public init(
@@ -195,8 +206,22 @@ public struct FormFieldView<Component: View>: View {
             // Footer
             HStack(alignment: .top, spacing: self.spacing) {
                 if let helper = self.viewModel.helper {
+                    if let helperImage, self.dynamicTypeSize < DynamicTypeSize.accessibility1 {
+                        helperImage
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(
+                                width: self.helperImageSize,
+                                height: self.helperImageSize
+                            )
+                            .foregroundStyle(self.viewModel.helperColor.color)
+                            .accessibilityIdentifier(FormFieldAccessibilityIdentifier.formFieldHelperImage)
+                            .accessibilityHidden(true)
+                    }
+
                     Text(helper)
                         .font(self.viewModel.helperFont.font)
+                        .frame(minHeight: self.helperImageSize)
                         .foregroundStyle(self.viewModel.helperColor.color)
                         .accessibilityIdentifier(FormFieldAccessibilityIdentifier.formFieldHelperMessage)
                         .accessibility(self.helperAccessibility)
@@ -208,6 +233,7 @@ public struct FormFieldView<Component: View>: View {
                     Text(secondaryHelper)
                         .font(self.viewModel.secondaryHelperFont.font)
                         .foregroundStyle(self.viewModel.secondaryHelperColor.color)
+                        .frame(minHeight: self.helperImageSize)
                         .accessibilityIdentifier(FormFieldAccessibilityIdentifier.formFieldSecondaryHelperMessage)
                         .accessibility(self.secondaryHelperAccessibility)
                 }

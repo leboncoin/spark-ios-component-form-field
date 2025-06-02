@@ -43,13 +43,18 @@ final class FormFieldUIViewSnapshotTests: UIKitComponentSnapshotTestCase {
                     theme: self.theme,
                     component: component,
                     feedbackState: configuration.feedbackState,
-                    title: configuration.label,
-                    helper: configuration.helperMessage,
+                    title: configuration.title,
+                    helper: configuration.helper,
                     isRequired: configuration.isRequired
                 )
 
+                view.helperImage = .init(configuration.helperImageName)
+
                 if configuration.isCounter {
-                    view.setCounter(on: "Text", limit: 100)
+                    view.setCounter(
+                        on: FormFieldSnapshotConstants.Counter.text,
+                        limit: FormFieldSnapshotConstants.Counter.limit
+                    )
                 }
 
                 view.backgroundColor = .systemBackground
@@ -78,6 +83,15 @@ final class FormFieldUIViewSnapshotTests: UIKitComponentSnapshotTestCase {
     }
 }
 
+// MARK: - Extension
+
 private extension UIImage {
-    static let mock: UIImage = UIImage(systemName: "checkmark")?.withRenderingMode(.alwaysTemplate) ?? UIImage()
+
+    convenience init?(_ imageName: String?) {
+        guard let imageName else {
+            return nil
+        }
+
+        self.init(systemName: imageName)
+    }
 }
