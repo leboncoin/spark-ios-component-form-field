@@ -13,11 +13,19 @@ final class FormFieldConstantsTests: XCTestCase {
 
     // MARK: - Tests
 
-    func test_helperImageSize() {
+    func test_iconSize() {
         // GIVEN / WHEN / THEN
         XCTAssertEqual(
-            FormFieldConstants.helperImageSize,
+            FormFieldConstants.iconSize,
             18
+        )
+    }
+
+    func test_defaultTitle() {
+        // GIVEN / WHEN / THEN
+        XCTAssertEqual(
+            FormFieldConstants.defaultTitle,
+            String(localized: "clear", bundle: .current)
         )
     }
 }

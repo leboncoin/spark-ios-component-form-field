@@ -61,18 +61,20 @@ private extension FormFieldFeedbackState {
         return switch self {
         case .default:
                 .init(
-                title: theme.colors.base.onSurface,
-                require: expectedCommonColor,
-                helper: expectedCommonColor,
-                secondaryHelper: expectedCommonColor
-            )
+                    title: theme.colors.base.onSurface,
+                    clearButton: theme.colors.feedback.onNeutralContainer,
+                    require: expectedCommonColor,
+                    helper: expectedCommonColor,
+                    secondaryHelper: expectedCommonColor
+                )
         case .error:
                 .init(
-                title: theme.colors.base.onSurface,
-                require: expectedCommonColor,
-                helper: theme.colors.feedback.error,
-                secondaryHelper: expectedCommonColor
-            )
+                    title: theme.colors.base.onSurface,
+                    clearButton: theme.colors.feedback.onNeutralContainer,
+                    require: expectedCommonColor,
+                    helper: theme.colors.feedback.error,
+                    secondaryHelper: expectedCommonColor
+                )
         }
     }
 }

@@ -10,6 +10,7 @@ import SparkTheming
 
 struct FormFieldFonts {
     let title: any TypographyFontToken
+    let clearButton: any TypographyFontToken
     let require: any TypographyFontToken
     let helper: any TypographyFontToken
     let secondaryHelper: any TypographyFontToken

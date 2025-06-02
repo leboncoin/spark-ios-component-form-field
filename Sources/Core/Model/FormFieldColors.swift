@@ -10,6 +10,7 @@ import SparkTheming
 
 struct FormFieldColors {
     let title: any ColorToken
+    let clearButton: any ColorToken
     let require: any ColorToken
     let helper: any ColorToken
     let secondaryHelper: any ColorToken

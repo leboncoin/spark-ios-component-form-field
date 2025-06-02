@@ -19,6 +19,7 @@ struct FormFieldGetFontsUseCase: FormFieldGetFontsUseCaseable {
         let commonFont = theme.typography.caption
         return .init(
             title: theme.typography.body2,
+            clearButton: theme.typography.body2,
             require: commonFont,
             helper: commonFont,
             secondaryHelper: commonFont

@@ -19,6 +19,9 @@ final class FormFieldViewModel: ObservableObject {
     @Published private(set) var formattedTitle: AttributedStringEither?
     @Published private(set) var titleAccessibilityLabel: String?
 
+    @Published private(set) var clearButtonFont: any TypographyFontToken
+    @Published private(set) var clearButtonColor: any ColorToken
+
     @Published var helper: String?
     @Published private(set) var helperFont: any TypographyFontToken
     @Published private(set) var helperColor: any ColorToken
@@ -107,6 +110,9 @@ final class FormFieldViewModel: ObservableObject {
 
         self.spacing = Self.spacing(from: theme)
 
+        self.clearButtonColor = self.colors.clearButton
+        self.clearButtonFont = self.fonts.clearButton
+
         self.helperColor = self.colors.helper
         self.helperFont = self.fonts.helper
 
@@ -168,6 +174,7 @@ final class FormFieldViewModel: ObservableObject {
     private func updateColors() {
         self.colors = self.getColorsUseCase.execute(from: self.theme, feedback: self.feedbackState)
 
+        self.clearButtonColor = self.colors.clearButton
         self.helperColor = self.colors.helper
         self.secondaryHelperColor = self.colors.secondaryHelper
     }
@@ -175,6 +182,7 @@ final class FormFieldViewModel: ObservableObject {
     private func updateFonts() {
         self.fonts = self.getFontsUseCase.execute(from: self.theme)
 
+        self.clearButtonFont = self.fonts.clearButton
         self.helperFont = self.fonts.helper
         self.secondaryHelperFont = self.fonts.secondaryHelper
     }

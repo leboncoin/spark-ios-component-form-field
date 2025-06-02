@@ -26,6 +26,7 @@ final class FormFieldGetFontsUseCaseTests: XCTestCase {
 
         // THEN
         XCTAssertEqual(fonts.title.uiFont, themeMocked.typography.body2.uiFont)
+        XCTAssertEqual(fonts.clearButton.uiFont, themeMocked.typography.body2.uiFont)
         XCTAssertEqual(fonts.helper.uiFont, themeMocked.typography.caption.uiFont)
         XCTAssertEqual(fonts.require.uiFont, themeMocked.typography.caption.uiFont)
         XCTAssertEqual(fonts.secondaryHelper.uiFont, themeMocked.typography.caption.uiFont)

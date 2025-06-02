@@ -17,21 +17,17 @@ struct FormFieldGetColorsUseCase: FormFieldGetColorsUseCaseable {
 
     func execute(from theme: Theme, feedback state: FormFieldFeedbackState) -> FormFieldColors {
         let commonColor = theme.colors.base.onSurface.opacity(theme.dims.dim1)
-        switch state {
-        case .default:
-            return .init(
-                title: theme.colors.base.onSurface,
-                require: commonColor,
-                helper: commonColor,
-                secondaryHelper: commonColor
-            )
-        case .error:
-            return .init(
-                title: theme.colors.base.onSurface,
-                require: commonColor,
-                helper: theme.colors.feedback.error,
-                secondaryHelper: commonColor
-            )
+        let helper = switch state {
+        case .default: commonColor
+        case .error: theme.colors.feedback.error
         }
+
+        return .init(
+            title: theme.colors.base.onSurface,
+            clearButton: theme.colors.feedback.onNeutralContainer,
+            require: commonColor,
+            helper: helper,
+            secondaryHelper: commonColor
+        )
     }
 }

@@ -32,6 +32,7 @@ final class FormFieldViewModelTests: XCTestCase {
     func test_init() throws {
         // GIVEN
         let titleColorMock = ColorTokenGeneratedMock()
+        let clearButtonColorMock = ColorTokenGeneratedMock()
         let requireColorMock = ColorTokenGeneratedMock()
         let helperColorMock = ColorTokenGeneratedMock()
         let secondaryHelperColorMock = ColorTokenGeneratedMock()
@@ -39,12 +40,14 @@ final class FormFieldViewModelTests: XCTestCase {
         let getColorsUseCaseMocked = FormFieldGetColorsUseCaseableGeneratedMock()
         getColorsUseCaseMocked.executeWithThemeAndStateReturnValue = .init(
             title: titleColorMock,
+            clearButton: clearButtonColorMock,
             require: requireColorMock,
             helper: helperColorMock,
             secondaryHelper: secondaryHelperColorMock
         )
 
         let titleFontMock = TypographyFontTokenGeneratedMock()
+        let clearButtonFontMock = TypographyFontTokenGeneratedMock()
         let requireFontMock = TypographyFontTokenGeneratedMock()
         let helperFontMock = TypographyFontTokenGeneratedMock()
         let secondaryHelperFontMock = TypographyFontTokenGeneratedMock()
@@ -52,6 +55,7 @@ final class FormFieldViewModelTests: XCTestCase {
         let getFontsUseCaseMocked = FormFieldGetFontsUseCaseableGeneratedMock()
         getFontsUseCaseMocked.executeWithThemeReturnValue = .init(
             title: titleFontMock,
+            clearButton: clearButtonFontMock,
             require: requireFontMock,
             helper: helperFontMock,
             secondaryHelper: secondaryHelperFontMock
@@ -89,6 +93,8 @@ final class FormFieldViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.helper, "Helper")
         XCTAssertEqual(viewModel.spacing, self.theme.layout.spacing.small)
 
+        XCTAssertIdentical(viewModel.clearButtonColor as? ColorTokenGeneratedMock, clearButtonColorMock)
+        XCTAssertIdentical(viewModel.clearButtonFont as? TypographyFontTokenGeneratedMock, clearButtonFontMock)
         XCTAssertIdentical(viewModel.helperColor as? ColorTokenGeneratedMock, helperColorMock)
         XCTAssertIdentical(viewModel.helperFont as? TypographyFontTokenGeneratedMock, helperFontMock)
         XCTAssertIdentical(viewModel.secondaryHelperColor as? ColorTokenGeneratedMock, secondaryHelperColorMock)

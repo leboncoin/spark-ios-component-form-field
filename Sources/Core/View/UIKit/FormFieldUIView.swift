@@ -15,16 +15,58 @@ import SparkTextInput
 
 // TODO: compression resistance
 
-/// The `FormFieldUIView`renders a component with title and subtitle using UIKit.
+/// The **Spark** FormField for UIKit provide context to your form elements easily.
+///
+/// FormField provide context to your form elements easily,
+/// unifying an a proper way to show a label, required marker,
+/// help & status messages or counter in any input/field components.
+///
+/// Implementation example:
+/// ```swift
+/// let theme: SparkTheming.Theme = MyTheme()
+/// let component = UITextField()
+///
+/// let formField = FormFieldUIView(
+///     theme: theme,
+///     component: component,
+///     feedbackState: .default,
+///     title: "Email (exemple@mail.fr)",
+///     helper: "Please provide a valid email (exemple@mail.fr)",
+///     isTitleRequired: true
+/// )
+/// formField.clearButtonImage = UIImage(systemName: "xmark.circle")
+/// formFieldView.clearButton.addAction(.init(handler: { _ in
+/// }), for: .touchUpInside)
+/// formField.helperImage = UIImage(systemName: "exclamationmark.circle")
+/// self.addSubview(formField)
+/// ```
+///
+/// ![FormField rendering with TextField.](component.png)
 public final class FormFieldUIView<Component: UIView>: UIView {
 
     // MARK: - Components
 
     private lazy var stackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [self.titleLabel, self.bottomStackView])
+        let stackView = UIStackView(arrangedSubviews: [
+            self.headerStackView,
+            self.footerStackView
+        ])
         stackView.axis = .vertical
-        stackView.spacing = self.spacing
+        stackView.distribution = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    private lazy var headerStackView: UIStackView = {
+        let stackView = AdaptiveUIStackView(arrangedSubviews: [
+            self.titleLabel,
+            self.clearButtonStackView
+        ])
+        stackView.regularAxis = .horizontal
+        stackView.accessibilityAxis = .vertical
+        stackView.accessibilityInterfaceSizeClass = .compact
+        stackView.alignment = .fill
+        stackView.distribution = .fill
         return stackView
     }()
 
@@ -34,26 +76,80 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         label.backgroundColor = .clear
         label.numberOfLines = 0
         label.adjustsFontForContentSizeCategory = true
-        label.accessibilityIdentifier = FormFieldAccessibilityIdentifier.formFieldLabel
+        label.isHidden = true
+        label.accessibilityIdentifier = FormFieldAccessibilityIdentifier.formFieldTitle
         label.isAccessibilityElement = true
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
 
-    private lazy var bottomStackView: UIStackView = {
+    private lazy var clearButtonStackView: UIStackView = {
+        let spacingView = UIView()
+        spacingView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        spacingView.isAccessibilityElement = false
+
+        let stackView = AdaptiveUIStackView(arrangedSubviews: [
+            spacingView,
+            self.clearButton
+        ])
+        stackView.alignment = .bottom
+        stackView.accessibilityAlignment = .trailing
+        stackView.distribution = .fill
+        stackView.accessibilityDistribution = .equalCentering
+        stackView.accessibilityInterfaceSizeClass = .compact
+        stackView.isHidden = true
+        return stackView
+    }()
+
+    /// The clear button of the input. The button is positioned at the top right.
+    /// Note: The label has a default *horizontal compression resistance priority* at **.required**.
+    public lazy var clearButton: UIButton = {
+        var configuration = UIButton.Configuration.plain()
+        configuration.title = FormFieldConstants.defaultTitle
+        configuration.imagePlacement = .trailing
+        configuration.imagePadding = self.spacing
+        configuration.titlePadding = .zero
+        configuration.contentInsets = .zero
+
+        let button = UIButton(configuration: configuration)
+        button.largeContentTitle = FormFieldConstants.defaultTitle
+        button.addInteraction(UILargeContentViewerInteraction())
+        button.titleLabel?.adjustsFontForContentSizeCategory = true
+        button.adjustsImageSizeForAccessibilityContentSizeCategory = true
+        button.showsLargeContentViewer = true
+        button.setContentCompressionResistancePriority(.required, for: .horizontal)
+        button.accessibilityIdentifier = FormFieldAccessibilityIdentifier.formFieldClearButton
+        button.isAccessibilityElement = true
+        return button
+    }()
+
+    private lazy var footerStackView: UIStackView = {
+        let stackView = AdaptiveUIStackView(arrangedSubviews: [
+            self.helperStackView,
+            self.secondaryHelperStackView
+        ])
+        stackView.regularAxis = .horizontal
+        stackView.accessibilityAxis = .vertical
+        stackView.accessibilityInterfaceSizeClass = .compact
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    private lazy var helperStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             self.helperImageView,
-            self.helperLabel,
-            self.secondaryHelperLabel
+            self.helperLabel
         ])
         stackView.axis = .horizontal
-        stackView.spacing = self.spacing
         stackView.alignment = .top
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
 
     /// The helper image of the input. The image is positioned at the bottom left.
-    /// It displayed only if the `helperLabel` is visible.
+    /// It displayed only if the ``helperLabel`` is visible.
     public let helperImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .clear
@@ -80,8 +176,25 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         self.helperLabel
     }
 
+    private lazy var secondaryHelperStackView: UIStackView = {
+        let spacingView = UIView()
+        spacingView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        spacingView.isAccessibilityElement = false
+
+        let stackView = AdaptiveUIStackView(arrangedSubviews: [
+            spacingView,
+            self.secondaryHelperLabel
+        ])
+        stackView.alignment = .bottom
+        stackView.accessibilityAlignment = .trailing
+        stackView.distribution = .fill
+        stackView.accessibilityDistribution = .equalCentering
+        stackView.accessibilityInterfaceSizeClass = .compact
+        return stackView
+    }()
+
     /// The secondary helper label of the input. The label is positioned at the bottom right.
-    /// Note : The label has a default *horizontal compression resistance priority* at **.required**.
+    /// Note: The label has a default *horizontal compression resistance priority* at **.required**.
     public let secondaryHelperLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .right
@@ -143,8 +256,19 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         }
     }
 
+    /// The clear image used by the clear button.
+    /// If **value** is setted, a the clear button will be visible.
+    public var clearButtonImage: UIImage? {
+        didSet {
+            self.clearButton.largeContentImage = self.clearButtonImage
+            self.clearButtonStackView.isHidden = self.clearButtonImage == nil
+            self.updateClearButtonImage()
+            self.updateAccessibilityElements()
+        }
+    }
+
     /// The helper image of formfield.
-    /// Displayed only if a `helper` is setted.
+    /// Displayed only if a ``helper`` is setted.
     public var helperImage: UIImage? {
         didSet {
             self.helperImageView.image = self.helperImage
@@ -244,9 +368,9 @@ public final class FormFieldUIView<Component: UIView>: UIView {
 
     private var cancellables = Set<AnyCancellable>()
     @ScaledUIMetric private var spacing: CGFloat
-    @ScaledUIMetric private var helperImageSize: CGFloat = FormFieldConstants.helperImageSize
+    @ScaledUIMetric private var iconSize: CGFloat = FormFieldConstants.iconSize
 
-    private var helperImageSizeWidthLayoutConstraint: NSLayoutConstraint?
+    private var helperIconSizeWidthLayoutConstraint: NSLayoutConstraint?
 
     // MARK: - Initialization
 
@@ -264,6 +388,24 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     ///   - title: The formfield title.
     ///   - helper: The formfield helper message.
     ///   - isRequired: The asterisk symbol at the end of title.
+    ///
+    /// Implementation example:
+    /// ```swift
+    /// let theme: SparkTheming.Theme = MyTheme()
+    /// let component = UITextField()
+    ///
+    /// let formField = FormFieldUIView(
+    ///     theme: theme,
+    ///     component: component,
+    ///     feedbackState: .default,
+    ///     title: "Email (exemple@mail.fr)",
+    ///     helper: "Please provide a valid email (exemple@mail.fr)",
+    ///     isTitleRequired: true
+    /// )
+    /// self.addSubview(formField)
+    /// ```
+    ///
+    /// ![FormField rendering with TextField.](component.png)
     public init(
         theme: Theme,
         component: Component,
@@ -320,7 +462,6 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         )
     }
 
-    // TODO: depercated and helper
     /// Initialize a formField.
     /// - Parameters:
     ///   - theme: The current Spark-Theme.
@@ -408,6 +549,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         self.accessibilityIdentifier = FormFieldAccessibilityIdentifier.formField
         self.isAccessibilityElement = false
         self.accessibilityContainerType = .semanticGroup
+        self.updateAccessibilityElements()
     }
 
     private func setComponent() {
@@ -420,8 +562,8 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         NSLayoutConstraint.stickEdges(from: self.stackView, to: self)
 
         self.helperImageView.translatesAutoresizingMaskIntoConstraints = false
-        self.helperImageSizeWidthLayoutConstraint = self.helperImageView.widthAnchor.constraint(equalToConstant: self.helperImageSize)
-        self.helperImageSizeWidthLayoutConstraint?.isActive = true
+        self.helperIconSizeWidthLayoutConstraint = self.helperImageView.widthAnchor.constraint(equalToConstant: self.iconSize)
+        self.helperIconSizeWidthLayoutConstraint?.isActive = true
         self.helperImageView.heightAnchor.constraint(equalTo: self.helperImageView.widthAnchor).isActive = true
 
         self.helperLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -439,6 +581,23 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         self.viewModel.$formattedTitle.subscribe(in: &self.cancellables) { [weak self] formattedTitle in
             self?.titleLabel.isHidden = formattedTitle == nil
             self?.titleLabel.attributedText = formattedTitle?.leftValue
+            self?.updateAccessibilityElements()
+        }
+        // ***
+
+        // ***
+        // Clear Button
+        self.viewModel.$clearButtonFont.subscribe(in: &self.cancellables) { [weak self] font in
+            self?.clearButton.configuration?.titleTextAttributesTransformer = .init { incoming in
+                var outgoing = incoming
+                outgoing.font = font.uiFont
+                return outgoing
+            }
+        }
+
+        self.viewModel.$clearButtonColor.subscribe(in: &self.cancellables) { [weak self] color in
+            self?.clearButton.tintColor = color.uiColor
+            self?.updateClearButtonImage()
         }
         // ***
 
@@ -448,6 +607,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
             self?.helperLabel.isHidden = text == nil
             self?.helperLabel.text = text
             self?.updateHelperImageVisibility()
+            self?.updateAccessibilityElements()
         }
 
         self.viewModel.$helperFont.subscribe(in: &self.cancellables) { [weak self] font in
@@ -465,6 +625,7 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         self.viewModel.$secondaryHelper.subscribe(in: &self.cancellables) { [weak self] text in
             self?.secondaryHelperLabel.isHidden = text == nil
             self?.secondaryHelperLabel.text = text
+            self?.updateAccessibilityElements()
         }
 
         self.viewModel.$secondaryHelperFont.subscribe(in: &self.cancellables) { [weak self] font in
@@ -479,20 +640,40 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         self.viewModel.$spacing.subscribe(in: &self.cancellables) { [weak self] spacing in
             guard let self = self else { return }
             self._spacing.wrappedValue = spacing
-            self.stackView.spacing = self.spacing
+            self.updateSpacing()
         }
     }
 
     // MARK: - Update
 
-    private func updateHelperImageVisibility() {
-        let isHidden = if self.helperImageView.image != nil && !self.helperLabel.isHidden {
-            self.traitCollection.preferredContentSizeCategory.isAccessibilityCategory
-        } else {
-            true
-        }
+    private func updateSpacing() {
+        self.stackView.spacing = self.spacing
+        self.headerStackView.spacing = self.spacing
+        self.clearButton.configuration?.imagePadding = self.spacing
+        self.footerStackView.spacing = self.spacing
+        self.helperStackView.spacing = self.spacing
+    }
 
-        self.helperImageView.isHidden = isHidden
+    private func updateClearButtonImage() {
+        let image: UIImage? = self.clearButtonImage?.resize(self.iconSize)?.withTintColor(self.viewModel.clearButtonColor.uiColor)
+        self.clearButton.configuration?.image = image
+    }
+
+    private func updateHelperImageVisibility() {
+        let isVisible = self.helperImageView.image != nil && !self.helperLabel.isHidden
+        self.helperImageView.isHidden = !isVisible
+    }
+
+    private func updateAccessibilityElements() {
+        let accessibilityElements = [
+            self.titleLabel.isHidden ? nil : self.titleLabel,
+            self.clearButton.isHidden ? nil : self.clearButton,
+            self.component,
+            self.helperLabel.isHidden ? nil : self.helperLabel,
+            self.secondaryHelperLabel.isHidden ? nil : self.secondaryHelperLabel
+        ].compactMap { $0 }
+
+        self.accessibilityElements = accessibilityElements
     }
 
     // MARK: - Trait Collection
@@ -500,14 +681,15 @@ public final class FormFieldUIView<Component: UIView>: UIView {
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        guard traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory else { return }
+        if self.traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+            self._spacing.update(traitCollection: traitCollection)
+            self.updateSpacing()
 
-        self._spacing.update(traitCollection: traitCollection)
-        self.stackView.spacing = self.spacing
-
-        self._helperImageSize.update(traitCollection: traitCollection)
-        self.helperImageSizeWidthLayoutConstraint?.constant = self.helperImageSize
-        self.helperImageView.updateConstraintsIfNeeded()
+            self._iconSize.update(traitCollection: traitCollection)
+            self.updateClearButtonImage()
+            self.helperIconSizeWidthLayoutConstraint?.constant = self.iconSize
+            self.helperImageView.updateConstraintsIfNeeded()
+        }
     }
 }
 
@@ -520,6 +702,8 @@ public extension FormFieldUIView where Component: UITextInput {
     /// Display a counter value (X/Y) in the secondary helper label with a text and the limit.
     /// - parameter text: the text where the characters must be counted.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    ///
+    /// ![FormField rendering with counter.](component_counter.png)
     func setCounter(on text: String?, limit: Int?) {
         self.viewModel.setCounter(textLength: text?.count, limit: limit)
     }
@@ -527,6 +711,8 @@ public extension FormFieldUIView where Component: UITextInput {
     /// Display a counter value (X/Y) in the secondary helper label with a text length and the limit.
     /// - parameter textLength: the text length.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    ///
+    /// ![FormField rendering with counter.](component_counter.png)
     func setCounter(on textLength: Int, limit: Int?) {
         self.viewModel.setCounter(textLength: textLength, limit: limit)
     }
@@ -539,6 +725,8 @@ public extension FormFieldUIView where Component: TextFieldAddonsUIView {
     /// Display a counter value (X/Y) in the secondary helper label with a text and the limit.
     /// - parameter text: the text where the characters must be counted.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    ///
+    /// ![FormField rendering with counter.](component_counter.png)
     func setCounter(on text: String?, limit: Int?) {
         self.viewModel.setCounter(textLength: text?.count, limit: limit)
     }
@@ -546,10 +734,29 @@ public extension FormFieldUIView where Component: TextFieldAddonsUIView {
     /// Display a counter value (X/Y) in the secondary helper label with a text length and the limit.
     /// - parameter textLength: the text length.
     /// - parameter limit: the counter limit. If the value is nil, the counter is not displayed.
+    ///
+    /// ![FormField rendering with counter.](component_counter.png)
     func setCounter(on textLength: Int, limit: Int?) {
         self.viewModel.setCounter(textLength: textLength, limit: limit)
     }
 }
+
+// MARK: - Private Extension
+
+private extension UIImage {
+
+    func resize(_ size: CGFloat) -> UIImage? {
+        let frame = CGRect(origin: CGPoint.zero, size: CGSize(width: size, height: size))
+        UIGraphicsBeginImageContextWithOptions(frame.size, false, 0)
+        self.draw(in: frame)
+        let resizedImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        self.withRenderingMode(.alwaysOriginal)
+        return resizedImage
+    }
+}
+
+// MARK: - Label
 
 public final class A11YLabel: UILabel {
 

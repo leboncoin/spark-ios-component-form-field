@@ -29,12 +29,14 @@ final class FormFieldGetFormattedTitleUseCaseTests: XCTestCase {
         // Setup mock colors and fonts
         self.mockColors = FormFieldColors(
             title: ColorTokenGeneratedMock(),
+            clearButton: ColorTokenGeneratedMock(),
             require: ColorTokenGeneratedMock(),
             helper: ColorTokenGeneratedMock(),
             secondaryHelper: ColorTokenGeneratedMock()
         )
         self.mockFonts = FormFieldFonts(
             title: TypographyFontTokenGeneratedMock(),
+            clearButton: TypographyFontTokenGeneratedMock(),
             require: TypographyFontTokenGeneratedMock(),
             helper: TypographyFontTokenGeneratedMock(),
             secondaryHelper: TypographyFontTokenGeneratedMock()

@@ -17,6 +17,7 @@ struct FormFieldConfigurationSnapshotTests {
     let scenario: FormFieldScenarioSnapshotTests
     let feedbackState: FormFieldFeedbackState
     let title: String?
+    let clearButtonImageName: String?
     let helper: String?
     let helperImageName: String?
     let isCounter: Bool
@@ -32,6 +33,7 @@ struct FormFieldConfigurationSnapshotTests {
             "\(self.scenario.rawValue)",
             "\(self.feedbackState)" + "FeedbackState",
             self.title != nil ? "withTitle" : nil,
+            self.clearButtonImageName != nil ? "withClearButton" : nil,
             self.helper != nil ? "withHelper" : nil,
             self.helperImageName != nil ? "withHelperImage" : nil,
             self.isRequired ? "isRequired" : nil,
