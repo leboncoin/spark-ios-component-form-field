@@ -401,25 +401,29 @@ public struct FormFieldView<Component: View>: View {
 
     /// Add a clear button at the top right of the form field.
     /// - parameter title: the title of the clear button. **Optional**. If value is nil, a default localization value will be displayed (*clear/effacer*).
-    /// - parameter icon: the icon of the clear button.
+    /// - parameter icon: the icon of the clear button. **Optional**. If value is nil, no clear button is displayed.
     /// - parameter action: the action on button tap.
     /// - Returns: The current view.
     ///
     /// ![FormField rendering with clear button.](component_clear_button.png)
     public func clearButton(
         title: String? = nil,
-        icon: Image,
+        icon: Image?,
         action: @escaping @MainActor () -> Void
     ) -> Self {
         var copy = self
-        copy.clearButton = ClearButton(
-            title: title,
-            icon: icon,
-            action: {
-                self.isComponentFocused = true
-                action()
-            }
-        )
+        if let icon {
+            copy.clearButton = ClearButton(
+                title: title,
+                icon: icon,
+                action: {
+                    self.isComponentFocused = true
+                    action()
+                }
+            )
+        } else {
+            copy.clearButton = nil
+        }
         return copy
     }
 
