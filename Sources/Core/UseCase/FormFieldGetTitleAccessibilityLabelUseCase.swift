@@ -34,13 +34,13 @@ struct FormFieldGetTitleAccessibilityLabelUseCase: FormFieldGetTitleAccessibilit
 
     func execute(title: String?, customValue: String?, isRequired: Bool) -> String? {
         guard isRequired else {
-            return customValue ?? title ?? nil
+            return customValue ?? title
         }
 
         return switch (title, customValue) {
         case (_, let customValue?): customValue + self.requireString
         case (let title?, nil): title + self.requireString
         default: nil
-        } as String?
+        }
     }
 }
