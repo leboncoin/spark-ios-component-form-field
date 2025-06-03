@@ -516,33 +516,6 @@ public final class FormFieldUIView<Component: UIView>: UIView {
         )
     }
 
-    /// Initialize a formField.
-    /// - Parameters:
-    ///   - theme: The current Spark-Theme.
-    ///   - component: The component is covered by formfield.
-    ///   - feedbackState: The formfield feedback state. 'Default' or 'Error'.
-    ///   - attributedTitle: The formfield attributedTitle.
-    ///   - attributedDescription: The formfield attributed helper message.
-    ///   - isTitleRequired: The asterisk symbol at the end of title.
-    @available(*, deprecated, message: "Replaced by the init with the helper String since the 0.1.1.")
-    public convenience init(
-        theme: Theme,
-        component: Component,
-        feedbackState: FormFieldFeedbackState = .default,
-        attributedTitle: NSAttributedString? = nil,
-        attributedDescription: NSAttributedString? = nil,
-        isTitleRequired: Bool = false
-    ) {
-        self.init(
-            theme: theme,
-            component: component,
-            feedbackState: feedbackState,
-            attributedTitle: attributedTitle,
-            attributedHelper: attributedDescription,
-            isTitleRequired: isTitleRequired
-        )
-    }
-
     // MARK: - Setup
 
     private func updateAccessibility() {
