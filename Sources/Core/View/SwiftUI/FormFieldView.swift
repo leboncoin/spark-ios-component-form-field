@@ -143,15 +143,13 @@ public struct FormFieldView<Component: View>: View {
         helper: String? = nil,
         isTitleRequired: Bool = false
     ) {
-        let attributedTitle: AttributedString? = title.map(AttributedString.init)
-        let attributedHelper: AttributedString? = helper.map(AttributedString.init)
         self.init(
             theme: theme,
-            component: component,
             feedbackState: feedbackState,
-            attributedTitle: attributedTitle,
-            attributedHelper: attributedHelper,
-            isTitleRequired: isTitleRequired
+            title: title,
+            helper: helper,
+            isRequired: isTitleRequired,
+            component: component
         )
     }
 
@@ -174,11 +172,11 @@ public struct FormFieldView<Component: View>: View {
     ) {
         self.init(
             theme: theme,
-            component: component,
             feedbackState: feedbackState,
             title: title,
             helper: description,
-            isTitleRequired: isTitleRequired
+            isRequired: isTitleRequired,
+            component: component
         )
     }
 
@@ -213,11 +211,11 @@ public struct FormFieldView<Component: View>: View {
 
         self.init(
             theme: theme,
-            component: component,
             feedbackState: feedbackState,
             title: title,
             helper: helper,
-            isTitleRequired: isTitleRequired
+            isRequired: isTitleRequired,
+            component: component
         )
     }
 
